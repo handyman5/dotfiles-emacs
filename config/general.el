@@ -31,8 +31,9 @@
  ;; http://www.emacswiki.org/emacs/WhiteSpace
 (require 'whitespace)
  ;; ensmartens buffer and file switching
-(ido-mode t)
-
+(setq ido-everywhere 1)
+(ido-mode 1)
+(ido-ubiquitous-mode 1)
 
 ;;;;;;;;;;;;;;;;;;
 ;; Global Modes ;;
