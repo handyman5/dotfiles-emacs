@@ -33,6 +33,7 @@
  ;; ensmartens buffer and file switching
 (setq ido-everywhere 1)
 (ido-mode 1)
+(setq ido-enable-flex-matching t)
 
 ;;;;;;;;;;;;;;;;;;
 ;; Global Modes ;;
