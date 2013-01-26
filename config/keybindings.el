@@ -12,6 +12,10 @@
 ;;(global-set-key "\C-c\C-m" 'execute-extended-command)
 (global-set-key [f7] 'call-last-kbd-macro)
 
+;; goto-line
+(global-set-key "\M-g" 'goto-line)
+
+
 ;; these do not work in OS X iTerm2
 ;(global-set-key [M-up] 'scroll-up)
 ;(global-set-key [M-down] 'scroll-down)

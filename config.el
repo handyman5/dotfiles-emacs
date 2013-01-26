@@ -14,5 +14,7 @@
 (load "config/org")
 (load "config/planner")
 (load "config/recentf")
+(load "config/smex")
+(load "config/magit")
 ;(load "config/graveyard")
 ;(load "config/theme")
