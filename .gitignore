@@ -1,5 +1,6 @@
 .smex-items
 auto-save-list
+backups
 config/custom.el
 elpa
 places

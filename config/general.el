@@ -6,8 +6,8 @@
 (server-start)
  ;; prevent the startup message from being displayed
 (setq inhibit-startup-message t)
- ;; disable making backups of files (filename~)
-(setq backup-inhibited t)
+ ;; store all backups in a central place
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
  ;; disable automatically saving files at intervals
 (setq auto-save-default nil)
  ;; replaces all "answer yes or no" prompts with "answer y or n"
