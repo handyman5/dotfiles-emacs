@@ -17,3 +17,6 @@
           :tags-as-categories nil)))
 
 
+;; Notes
+;; in-buffer settings: http://orgmode.org/manual/In_002dbuffer-settings.html
+;; cheat sheet: http://orgmode.org/orgcard.txt

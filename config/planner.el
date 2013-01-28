@@ -1,3 +1,7 @@
+;; see http://www.emacswiki.org/emacs/McMahanPlannerModeConfig
+;; for more ideas
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Planner-mode configuration ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -14,7 +18,7 @@
 (setq planner-use-other-window nil)
 ; This command is not technically part of Planner, but it's here for
 ; sanity's sake
-(setq diary-file "~/plans/.diary")
+(setq diary-file "~/wiki/Plans/.diary")
 ;; This command forces newly created tasks to the end of the first
 ;; task block (http://www.emacswiki.org/cgi-bin/wiki/PlannerModeMethods)
 ;(setq planner-add-task-at-end-flag t)
@@ -27,7 +31,7 @@
 (setq muse-project-alist
       '(
        ("WikiPlanner"
-        ("~/plans"
+        ("~/wiki/Plans"
          :default "WelcomePage"
          :major-mode planner-mode
          :visit-link planner-visit-link)
@@ -47,7 +51,7 @@
 (defun planner-day-template ()
   "Build a new day page."
   (interactive)
-  (insert "* Tasks\n** In-Progress\n\n\n** Completed\n\n\n* Notes\n\n"))
+  (insert "#+STARTUP:showeverything\n\n* Tasks\n** In-Progress\n\n\n** Completed\n\n\n* Notes\n\n"))
 
 (setq planner-day-page-template 'planner-day-template)
 
