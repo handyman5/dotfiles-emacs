@@ -3,7 +3,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
  ;; starts an emacs server so as to be available to emacsclient
-(server-start)
+(require 'server)
+(or (server-running-p)
+    (server-start))
+;(server-start)
  ;; prevent the startup message from being displayed
 (setq inhibit-startup-message t)
  ;; store all backups in a central place
@@ -86,3 +89,14 @@
 
 ; enable auto-fill-mode only for org-mode/blogging, not coding
 ;   (auto-fill-mode 1)
+
+
+
+; working on OSX windowing -- http://superuser.com/a/450442
+;(setq ns-pop-up-frames nil)
+(setq initial-frame-alist (cons '(height . 68) initial-frame-alist))
+
+(if (window-system)
+   (set-frame-height (selected-frame) 60)
+   (set-frame-position (selected-frame) 50 30))
+

@@ -16,6 +16,21 @@
           :default-categories ("org2blog" "emacs")
           :tags-as-categories nil)))
 
+(setq org2blog/wp-buffer-template
+"#+DATE: %s
+#+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil TeX:nil
+#+CATEGORY: 
+#+TAGS:
+#+PERMALINK:
+#+TITLE:
+\n
+#+HTML: <!--more-->
+\n")
+
+;; Adding TODO keywords
+;; http://orgmode.org/manual/Workflow-states.html#Workflow-states
+(setq org-todo-keywords '((sequence "TODO" "LIVE" "WAIT" "|"
+                                    "WONT" "DONE")))
 
 ;; Notes
 ;; in-buffer settings: http://orgmode.org/manual/In_002dbuffer-settings.html
