@@ -34,9 +34,9 @@
  ;; http://www.emacswiki.org/emacs/WhiteSpace
 (require 'whitespace)
  ;; ensmartens buffer and file switching
-(setq ido-everywhere 1)
-(ido-mode 1)
-(setq ido-enable-flex-matching t)
+;(setq ido-everywhere 1)
+;(ido-mode 1)
+;(setq ido-enable-flex-matching t)
 
 ;;;;;;;;;;;;;;;;;;
 ;; Global Modes ;;
@@ -47,7 +47,7 @@
  ;; make emacs highlight the current line
  ;; (from http://www.emacsblog.org/2007/04/09/highlight-the-current-line/)
 (global-hl-line-mode 1)
-(set-face-background 'hl-line "light gray")
+;(set-face-background 'hl-line "light gray")
  ;; provides support for editing by visual lines instead of logical lines
 (global-visual-line-mode 1)
  ;; make emacs highlight the marked region (in blue by default)

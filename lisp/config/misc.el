@@ -41,11 +41,6 @@
             (kill-buffer buffer)))))
 
 
-(require 'color-theme)
-
-
-
-
 ;; Jump to end of line, exclusive of comments
 ;; http://www.emacswiki.org/emacs/EndOfLineNoComments
 (require 'newcomment)
@@ -62,3 +57,5 @@
 
 ;; (message "My .emacs loaded in %ds" (destructuring-bind (hi lo ms) (current-time)
 ;;                     (- (+ hi lo) (+ (first *emacs-load-start*) (second *emacs-load-start*)))))
+
+(elpy-enable)
