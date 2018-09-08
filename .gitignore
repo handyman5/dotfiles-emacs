@@ -5,3 +5,5 @@ config/custom.el
 places
 tramp
 url
+*.elc
+elpa
