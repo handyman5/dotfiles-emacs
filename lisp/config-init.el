@@ -12,7 +12,6 @@
 (load "config/modes")
 (load "config/mouse")
 (load "config/org")
-(load "config/planner")
 (load "config/projectile")
 ;(load "config/recentf")
 (load "config/smex")
@@ -21,3 +20,4 @@
 (load "config/theme")
 (load "config/helm")
 (load "config/neotree")
+
