@@ -8,7 +8,8 @@
 (color-theme-initialize)
 (setq color-theme-is-global t)
 
-(color-theme-arjen)
+(color-theme-parus)
+;(color-theme-arjen)
 ;(color-theme-molokai)
 ;(color-theme-colorful-obsolescence)
 

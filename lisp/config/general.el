@@ -73,8 +73,8 @@
  ;; adds the column number to the modeline
 (column-number-mode)
  ;; set time to show in corner
-(setq display-time-day-and-date t)
-(display-time)
+;(setq display-time-day-and-date t)
+;(display-time)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

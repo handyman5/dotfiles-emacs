@@ -49,6 +49,8 @@
      ("#A41F99" . 85)
      ("#49483E" . 100))))
  '(magit-diff-use-overlays nil)
+ '(mouse-wheel-progressive-speed nil)
+ '(mouse-wheel-scroll-amount (quote (1 ((shift) . 5) ((control)))))
  '(notmuch-search-line-faces
    (quote
     (("unread" :foreground "#aeee00")
@@ -59,7 +61,7 @@
     ("#CC9393" "#DFAF8F" "#F0DFAF" "#7F9F7F" "#BFEBBF" "#93E0E3" "#94BFF3" "#DC8CC3")))
  '(org-agenda-files
    (quote
-    ("~/org/inbox.org" "~/org/work_qc.org_archive" "~/org/travel.org" "~/org/review.org" "~/org/conferences.org" "~/org/reference.org" "~/org/personal-development.org" "~/org/creative.org" "~/org/refrence.org" "~/org/home.org" "~/org/work_fdi.org" "~/org/fun.org" "~/org/work.org" "~/org/home_projects.org" "/Users/acompton/org/notes.org")))
+    ("/Users/acompton/org/activity.org" "/Users/acompton/org/all notes.org" "/Users/acompton/org/inbox.org" "/Users/acompton/org/journal.org" "/Users/acompton/org/reference.org" "/Users/acompton/org/journal/20181108")))
  '(package-archives
    (quote
     (("melpa" . "https://melpa.org/packages/")
@@ -68,9 +70,8 @@
      ("gnu" . "https://elpa.gnu.org/packages/"))))
  '(package-selected-packages
    (quote
-    (org-plus-contrib org orgalist js2-mode treemacs treemacs-projectile groovy-mode vmd-mode impatient-mode flymd markdown-mode markdown-preview-eww markdown-preview-mode markdown-toc zenburn-theme yaml-mode weblogger web-mode w3m w3 tron-theme terraform-mode tabkey2 switch-window screen-lines rainbow-mode python-pylint python-pep8 python-mode python-magic pytest pysmell pylint pyflakes pyde py-import-check puppet-mode protobuf-mode php-mode pep8 org2blog org-projectile org-magit org-journal org-gcal org-dashboard org-capture-pop-frame org-blog org-beautify-theme org-babel-eval-in-repl neotree muse monokai-theme meacupla-theme magit-simple-keys magit-push-remote magit-gh-pulls magit-commit-training-wheels json-mode jedi-direx ipython idle-highlight-mode httprepl http-post-simple htmlize hideshowvis helm-projectile helm-git helm-ack git-rebase-mode git-commit-mode elpy el-x ecb diminish deft crontab-mode creole-mode creole confluence-edit company-statistics color-theme-wombat color-theme-wombat+ color-theme-vim-insert-mode color-theme-twilight color-theme-tangotango color-theme-tango color-theme-solarized color-theme-sanityinc-tomorrow color-theme-railscasts color-theme-monokai color-theme-molokai color-theme-library color-theme-ir-black color-theme-gruber-darker color-theme-github color-theme-emacs-revert-theme color-theme-eclipse color-theme-dpaste color-theme-dg color-theme-dawn-night color-theme-complexity color-theme-colorful-obsolescence color-theme-cobalt color-theme-buffer-local color-theme-blackboard color-theme-actress color-theme-active bm avy-menu apache-mode anti-zenburn-theme ac-js2)))
+    (mac-pseudo-daemon rainbow-delimiters graphviz-dot-mode ob-browser ob-http ob-ipython org-plus-contrib orgalist js2-mode treemacs treemacs-projectile groovy-mode vmd-mode impatient-mode flymd markdown-mode markdown-preview-eww markdown-preview-mode markdown-toc zenburn-theme yaml-mode weblogger web-mode w3m w3 tron-theme terraform-mode tabkey2 switch-window screen-lines rainbow-mode python-pylint python-pep8 python-mode python-magic pytest pysmell pylint pyflakes pyde py-import-check puppet-mode protobuf-mode php-mode pep8 org2blog org-projectile org-magit org-journal org-gcal org-dashboard org-capture-pop-frame org-blog org-beautify-theme org-babel-eval-in-repl neotree muse monokai-theme meacupla-theme magit-simple-keys magit-push-remote magit-gh-pulls magit-commit-training-wheels json-mode jedi-direx ipython idle-highlight-mode httprepl http-post-simple htmlize hideshowvis helm-projectile helm-git helm-ack git-rebase-mode git-commit-mode elpy el-x ecb diminish deft crontab-mode creole-mode creole confluence-edit company-statistics color-theme-wombat color-theme-wombat+ color-theme-vim-insert-mode color-theme-twilight color-theme-tangotango color-theme-tango color-theme-solarized color-theme-sanityinc-tomorrow color-theme-railscasts color-theme-monokai color-theme-molokai color-theme-library color-theme-ir-black color-theme-gruber-darker color-theme-github color-theme-emacs-revert-theme color-theme-eclipse color-theme-dpaste color-theme-dg color-theme-dawn-night color-theme-complexity color-theme-colorful-obsolescence color-theme-cobalt color-theme-buffer-local color-theme-blackboard color-theme-actress color-theme-active bm avy-menu apache-mode anti-zenburn-theme ac-js2)))
  '(puppet-indent-level 4)
- '(text-mode-hook (quote (turn-on-flyspell text-mode-hook-identify)))
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote

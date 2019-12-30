@@ -4,17 +4,21 @@
 ;; Meta-<space> sets the mark.
 (global-set-key "\M- " 'set-mark-command)
 ;; This one's just for fun.
-(global-set-key [f8] 'treemacs-toggle)
+;(global-set-key [f8] 'treemacs-toggle)
 ;; Control-Tab switches through windows
 ;(global-set-key [C-tab] 'other-window)
 ;(global-set-key [C-S-tab] '(lambda () (interactive) (other-window -1)))
 (global-set-key "\C-x\C-a" 'execute-extended-command)
 ;;(global-set-key "\C-c\C-m" 'execute-extended-command)
 (global-set-key [f7] 'call-last-kbd-macro)
-(global-set-key [f9] 'nav-toggle)
+;(global-set-key [f9] 'nav-toggle)
 
 ;; goto-line
 (global-set-key "\M-g" 'goto-line)
+
+;; search symbol at point
+(global-set-key (kbd "C-M-s") 'isearch-forward-symbol-at-point)
+
 
 ;; undo
 (global-set-key (kbd "C-/") 'undo)
@@ -34,6 +38,10 @@
 (windmove-default-keybindings 'control)
 ;; when cursor is on edge, move to the other side, as in a toroidal space
 (setq windmove-wrap-around t )
+;; switch buffers quickly
+(global-set-key (kbd "C-S-<left>") 'previous-buffer)
+(global-set-key (kbd "C-S-<right>") 'next-buffer)
+
 
 ;; ;; https://www.emacswiki.org/emacs/WindMove
 ;; (defun ignore-error-wrapper (fn)
