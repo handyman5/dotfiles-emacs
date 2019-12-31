@@ -1,4 +1,10 @@
-*.elc
+# Ignore everything
+*
+# Except for..
+!.gitignore
+!init.el
+!config.org
+!themes/
 
 # local patch for mac-pseudo-daemon
 !elpa/
