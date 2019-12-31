@@ -205,15 +205,15 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
   (load-theme 'wilmersdorf t)
 #+END_SRC
-*** Dashboard welcome page
+*** Dashboard welcome page (commented out)
 #+BEGIN_SRC emacs-lisp
-  (use-package dashboard
-    :config
-    (dashboard-setup-startup-hook)
-    (setq dashboard-startup-banner 'logo
-          dashboard-banner-logo-title "Yay Evil!"
-          dashboard-items nil
-          dashboard-set-footer nil))
+  ;; (use-package dashboard
+  ;;   :config
+  ;;   (dashboard-setup-startup-hook)
+  ;;   (setq dashboard-startup-banner 'logo
+  ;;         dashboard-banner-logo-title "Yay Evil!"
+  ;;         dashboard-items nil
+  ;;         dashboard-set-footer nil))
 #+END_SRC
 *** Syntax highlighting
 Lightweight syntax highlighting improvement for numbers, operators, and escape sequences.
@@ -227,60 +227,24 @@ Lightweight syntax highlighting improvement for numbers, operators, and escape s
   (use-package highlight-escape-sequences
     :hook (prog-mode . hes-mode))
 #+END_SRC
-** Vi keybindings
-I personally find Vi(m) bindings to be the most efficient way of editing text (especially code). I also changed the default ~:q~ and ~:wq~ to be killing current buffer instead of killing the frame or subsequently killing Emacs.
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package evil
-  ;;   :diminish undo-tree-mode
-  ;;   :init
-  ;;   (setq evil-want-C-u-scroll t)
-  ;;   (setq evil-shift-width ian/indent-width)
-  ;;   :config
-  ;;   (evil-mode +1)
-  ;;   (with-eval-after-load 'evil-maps ; avoid conflict with company tooltip selection
-  ;;     (define-key evil-insert-state-map (kbd "C-n") nil)
-  ;;     (define-key evil-insert-state-map (kbd "C-p") nil))
-  ;;   (evil-set-initial-state 'term-mode 'emacs)
-  ;;   (defun ian/save-and-kill-this-buffer ()
-  ;;     (interactive)
-  ;;     (save-buffer)
-  ;;     (kill-this-buffer))
-  ;;   (evil-ex-define-cmd "q" 'kill-this-buffer)
-  ;;   (evil-ex-define-cmd "wq" 'ian/save-and-kill-this-buffer)
-  ;;   (use-package evil-commentary
-  ;;     :after evil
-  ;;     :diminish evil-commentary-mode
-  ;;     :config (evil-commentary-mode +1)))
-#+END_SRC
-Evil keybindings for magit.
-#+BEGIN_SRC emacs-lisp
-  (use-package evil-magit)
-#+END_SRC
-** Git Integration
-Tell magit to automatically put us in vi-insert-mode when committing a change.
-#+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :bind ("C-x g" . magit-status)
-    :config (add-hook 'with-editor-mode-hook #'evil-insert-state))
-#+END_SRC
 ** Searching/sorting enhancements & project management
-*** Ido, ido-vertical, ido-ubiquitous and fuzzy matching
+*** Ido, ido-vertical, ido-ubiquitous and fuzzy matching (commented out)
 Selecting buffers/files with great efficiency. In my opinion, Ido is enough to replace Ivy/Counsel and Helm. We install ido-vertical to get a better view of the available options (use ~C-n~, ~C-p~ or arrow keys to navigate). Ido-ubiquitous (from the ~ido-completing-read+~ package) provides us ido-like completions in describing functions and variables etc. Fuzzy matching is a nice feature and we have flx-ido for that purpose.
 #+BEGIN_SRC emacs-lisp
-  (use-package ido
-    :config
-    (ido-mode +1)
-    (setq ido-everywhere t
-          ido-enable-flex-matching t))
+  ;; (use-package ido
+  ;;   :config
+  ;;   (ido-mode +1)
+  ;;   (setq ido-everywhere t
+  ;;         ido-enable-flex-matching t))
 
-  (use-package ido-vertical-mode
-    :config
-    (ido-vertical-mode +1)
-    (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
+  ;; (use-package ido-vertical-mode
+  ;;   :config
+  ;;   (ido-vertical-mode +1)
+  ;;   (setq ido-vertical-define-keys 'C-n-C-p-up-and-down))
 
-  (use-package ido-completing-read+ :config (ido-ubiquitous-mode +1))
+  ;; (use-package ido-completing-read+ :config (ido-ubiquitous-mode +1))
 
-  (use-package flx-ido :config (flx-ido-mode +1))
+  ;; (use-package flx-ido :config (flx-ido-mode +1))
 #+END_SRC
 ** Programming language support and utilities
 *** Company for auto-completion
@@ -411,4 +375,249 @@ Provides us with hints on available keystroke combinations.
   ;;      (do-applescript "tell application \"System Events\" to tell process \"Emacs\" to set visible to false"))))
 
 
+#+END_SRC
+** Config from old .emacs.d
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+
+** Org-mode config from old .emacs.d
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+
+* Configuration from old .emacs.d
+** bookmarks.el
+#+BEGIN_SRC emacs-lisp
+;; bookmarks -- http://www.nongnu.org/bm/
+(require 'bm)
+;; M$ Visual Studio key setup.
+(global-set-key [f2] 'bm-toggle)
+(global-set-key [f5] 'bm-next)
+(global-set-key [f6] 'bm-previous)
+#+END_SRC
+** company.el
+#+BEGIN_SRC emacs-lisp
+;; https://company-mode.github.io/
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;; http://psung.blogspot.com/2008/05/from-dabbrev-expand-to-hippie-expand.html
+(global-set-key "\M-/" 'company-complete)
+#+END_SRC
+** general.el
+#+BEGIN_SRC emacs-lisp
+;; starts an emacs server so as to be available to emacsclient
+(require 'server)
+(or (server-running-p)
+    (server-start))
+;; prevent the startup message from being displayed
+(setq inhibit-startup-message t)
+;; store all backups in a central place
+(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
+;; disable automatically saving files at intervals
+(setq auto-save-default nil)
+;; replaces all "answer yes or no" prompts with "answer y or n"
+(fset 'yes-or-no-p 'y-or-n-p)
+;; show trailing whitespace in red
+(setq show-trailing-whitespace t)
+
+(global-hl-line-mode 1)
+(set-face-background 'hl-line "blue")
+;; provides support for editing by visual lines instead of logical lines
+(global-visual-line-mode 1)
+;; make emacs highlight the marked region (in blue by default)
+(transient-mark-mode 1)
+;; makes selected region work like Windows (i.e., delete the entire thing)
+(cua-selection-mode 1)
+
+;; disable menubar when running emacs in a terminal
+(if window-system (menu-bar-mode 1) (menu-bar-mode -1))
+;; Disable Aquamacs' tool-bar
+;; (http://www.emacswiki.org/cgi-bin/wiki/AquamacsFAQ#toc12)
+(setq tool-bar-mode nil)
+#+END_SRC
+** hideshow.el
+#+BEGIN_SRC emacs-lisp
+;; HideShow
+;; http://www.emacswiki.org/emacs/HideShow
+(global-set-key (kbd "M-=") 'hs-toggle-hiding)
+(global-set-key (kbd "M-+") 'hs-show-all)
+(global-set-key (kbd "M-_") 'hs-hide-all)
+(global-set-key (kbd "C-M-_") 'hs-hide-all)
+
+(defadvice goto-line (after expand-after-goto-line
+                            activate compile)
+  "hideshow-expand affected block when using goto-line in a collapsed buffer"
+  (save-excursion
+    (hs-show-block)))
+
+(defun display-code-line-counts (ov)
+  (when (eq 'code (overlay-get ov 'hs))
+    (overlay-put ov 'display
+                 (format "... / %d"
+                         (count-lines (overlay-start ov)
+                                      (overlay-end ov))))))
+
+(setq hs-set-up-overlay 'display-code-line-counts)
+(setq hs-isearch-open t)
+
+(add-hook 'conf-mode-hook 'hs-minor-mode)
+(add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+(add-hook 'indented-text-mode-hook 'hs-minor-mode)
+(add-hook 'java-mode-hook 'hs-minor-mode)
+(add-hook 'perl-mode-hook 'hs-minor-mode)
+(add-hook 'puppet-mode-hook 'hs-minor-mode)
+(add-hook 'python-mode-hook 'hs-minor-mode)
+(add-hook 'ruby-mode-hook 'hs-minor-mode)
+(add-hook 'shell-mode-hook 'hs-minor-mode)
+
+; Ruby HideShow support
+(add-to-list 'hs-special-modes-alist
+             '(ruby-mode
+               "\\(def\\|do\\|{\\)" "\\(end\\|end\\|}\\)" "#"
+               (lambda (arg) (ruby-end-of-block)) nil))
+#+END_SRC
+** keybindings.el
+#+BEGIN_SRC emacs-lisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Keyboard shortcut configuration ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Meta-<space> sets the mark.
+(global-set-key "\M- " 'set-mark-command)
+;; This one's just for fun.
+;(global-set-key [f8] 'treemacs-toggle)
+;; Control-Tab switches through windows
+;(global-set-key [C-tab] 'other-window)
+;(global-set-key [C-S-tab] '(lambda () (interactive) (other-window -1)))
+(global-set-key "\C-x\C-a" 'execute-extended-command)
+;;(global-set-key "\C-c\C-m" 'execute-extended-command)
+(global-set-key [f7] 'call-last-kbd-macro)
+;(global-set-key [f9] 'nav-toggle)
+
+;; goto-line
+(global-set-key "\M-g" 'goto-line)
+
+;; search symbol at point
+(global-set-key (kbd "C-M-s") 'isearch-forward-symbol-at-point)
+
+
+;; undo
+(global-set-key (kbd "C-/") 'undo)
+
+
+;; these do not work in OS X iTerm2
+;(global-set-key [M-up] 'scroll-up)
+;(global-set-key [M-down] 'scroll-down)
+
+;; make ^H give help instead of delete-backward-char
+(add-hook 'term-setup-hook
+          (lambda ()
+           (when (getenv "TERM")
+             (global-set-key "\C-h" 'help))))
+
+;; S-{up,down,left,right}
+(windmove-default-keybindings 'control)
+;; when cursor is on edge, move to the other side, as in a toroidal space
+(setq windmove-wrap-around t )
+;; switch buffers quickly
+(global-set-key (kbd "C-S-<left>") 'previous-buffer)
+(global-set-key (kbd "C-S-<right>") 'next-buffer)
+
+
+;; ;; https://www.emacswiki.org/emacs/WindMove
+;; (defun ignore-error-wrapper (fn)
+;;     "Funtion return new function that ignore errors.
+;;    The function wraps a function with `ignore-errors' macro."
+;;     (lexical-let ((fn fn))
+;;       (lambda ()
+;;         (interactive)
+;;         (ignore-errors
+;;           (funcall fn)))))
+;;
+;; (global-set-key [c-left] (ignore-error-wrapper 'windmove-left))
+;; (global-set-key [c-right] (ignore-error-wrapper 'windmove-right))
+;; (global-set-key [c-up] (ignore-error-wrapper 'windmove-up))
+;; (global-set-key [c-down] (ignore-error-wrapper 'windmove-down))
+#+END_SRC
+** modes.js
+#+BEGIN_SRC emacs-lisp
+(autoload #'puppet-mode "puppet-mode" "Start puppet-mode" t)
+(add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
+
+(autoload #'php-mode "php-mode" "Start php-mode" t)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+
+(autoload 'js2-mode "js2" nil t)
+(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+
+;; from https://github.com/rmm5t/dotfiles/blob/master/emacs.d/rmm5t/markdown-mode.el
+(add-to-list 'auto-mode-alist '("\\.markdown$" . gfm-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . gfm-mode))
+(add-to-list 'auto-mode-alist '("\\.text$" . gfm-mode))
+
+(eval-after-load 'markdown-mode
+  '(progn
+     (define-key markdown-mode-map (kbd "C-c C-v") 'markdown-preview)
+     ))
+
+(autoload 'markdown-mode "markdown-mode" nil t)
+(autoload 'gfm-mode "gfm-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("README\\.md$" . gfm-mode))
+(setq markdown-command "multimarkdown")
+
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
+(defun my-js-mode-hook ()
+  "Customizations"
+  (setq js-indent-level 2)
+  (setq indent-tabs-mode nil))
+(add-hook 'js-mode-hook 'my-js-mode-hook)
+#+END_SRC
+** parens.el
+#+BEGIN_SRC emacs-lisp
+(defun forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
+
+(global-set-key (kbd "C-\\") 'forward-or-backward-sexp)
+#+END_SRC
+** recentf.el
+#+BEGIN_SRC emacs-lisp
+;; recentf stuff -- http://www.joegrossberg.com/archives/000182.html
+(require 'recentf)
+(recentf-mode)
+(setq recentf-max-menu-items 25)
+(global-set-key "\C-x\ \C-r" 'recentf-open-files)
+#+END_SRC
+** theme.el
+#+BEGIN_SRC emacs-lisp
+  ;; ;;;;;;;;;;;;;;;;;;
+  ;; ;; Color Themes ;;
+  ;; ;;;;;;;;;;;;;;;;;;
+  ;; ;; reference: http://raebear.net/comp/emacscolors.html
+  ;; ;(add-to-list 'load-path "~/elisp/color-theme")
+  ;; ;(autoload 'color-theme-select "color-theme" "Enable wheely mouse")
+  ;; (require 'color-theme)
+  ;; (color-theme-initialize)
+  ;; (setq color-theme-is-global t)
+
+  ;; ;(color-theme-parus)
+  ;; ;(color-theme-arjen)
+  ;; ;(color-theme-molokai)
+  ;; ;(color-theme-colorful-obsolescence)
+
+  (set-face-background 'hl-line "color-52")
+  ;; M-x helm-colors to see the available options
+
+
+  ;(color-theme-solarized-dark)
+  ;(load-theme 'zenburn t)
+  ;(color-theme-clarity)
+  ;(color-theme-tty-dark)
 #+END_SRC
