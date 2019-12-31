@@ -1,0 +1,6 @@
+*.elc
+
+# local patch for mac-pseudo-daemon
+!elpa/
+elpa/*
+!elpa/mac-pseudo-daemon-*/
