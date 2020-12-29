@@ -1,0 +1,390 @@
+#+Title: My Emacs Config
+#+Author: Adam Compton
+#+Date: 2020
+
+* Enable use-package
+
+This stanza comes before all others, and enables the use of the wonderful `use-package` function.
+
+[[https://www.masteringemacs.org/article/spotlight-use-package-a-declarative-configuration-tool][This is an excellent reference]] for configuring use-package.
+
+N.B. [[https://emacs.stackexchange.com/a/10403][the difference]] between `init` and `config` is that `init` is run when emacs starts but `config` is run when the package is loaded
+N.B. 2 `defer` is implied if automatic if :commands, :bind, :bind*,  :mode or :interpreter are used
+
+`package-archive-priorities` is from https://emacs.stackexchange.com/a/22261.
+
+#+BEGIN_SRC emacs-lisp
+  (require 'package)
+  (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+  (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
+  (setq package-enable-at-startup nil)
+  (setq use-package-always-ensure t)
+  (package-initialize)
+
+  (setq package-archive-priorities
+	'(("melpa" . 20)
+	  ("org" . 15)
+	  ("gnu" . 10)
+	  ("melpa-stable" . 0)))
+
+  ;; Setting up the package manager. Install if missing.
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-and-compile
+    (setq use-package-always-ensure t))
+
+  (setq package-archive-priorities
+	'(("melpa-stable" . 20)
+	  ("org" . 15)
+	  ("gnu" . 10)
+	  ("melpa" . 0)))
+
+
+#+END_SRC
+
+* General Configuration
+
+** Disable the startup and splash screens
+
+#+BEGIN_SRC emacs-lisp
+(use-package "startup"
+  :custom
+  (inhibit-startup-screen t)
+  (inhibit-splash-screen t))
+#+END_SRC
+
+** Disable backups
+
+#+BEGIN_SRC emacs-lisp
+(setq make-backup-files nil)
+#+END_SRC
+
+** Set a pretty theme
+
+#+BEGIN_SRC emacs-lisp
+(use-package "monokai-pro-theme"
+  :init
+  (load-theme 'monokai-pro t))
+#+END_SRC
+
+** More natural scrolling
+
+From https://ogbe.net/emacs/minimal.html
+
+#+BEGIN_SRC emacs-lisp
+(setq scroll-step            1
+      scroll-conservatively  10000)
+#+END_SRC
+
+** Show trailing whitespace
+
+From https://ogbe.net/emacs/minimal.html
+
+#+BEGIN_SRC emacs-lisp
+(use-package whitespace
+  :config
+  (set-face-attribute 'trailing-whitespace nil :background "indian red")
+  (setq-default show-trailing-whitespace t))
+#+END_SRC
+
+* Miscellaneous Useful Packages
+
+** diminish
+
+This [[https://github.com/emacsmirror/diminish][package]] implements hiding or abbreviation of the mode line displays (lighters) of minor-modes.
+
+#+BEGIN_SRC emacs-lisp
+(use-package diminish)
+#+END_SRC
+
+** smex
+
+This [[https://github.com/nonsequitur/smex][package]] adds most-recently-used support to `M-x`, including when invoked by `counsel-M-x`
+
+#+BEGIN_SRC emacs-lisp
+(use-package smex
+  :config (smex-initialize))
+#+END_SRC
+
+** which-key
+
+This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p.
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :diminish
+  :custom
+  (which-key-idle-delay 0.05)
+  (which-key-side-window-max-width 0.33)
+  (which-key-sort-order 'which-key-key-order-alpha)
+  :config
+  (which-key-setup-side-window-right-bottom)
+  (which-key-mode))
+#+END_SRC
+
+* Ivy/Counsel
+
+** Ivy
+
+[[https://github.com/abo-abo/swiper][Ivy]] is a narrowing-completion framework. It narrows options in emacs-the-application, whereas company autocompletes buffer contents.
+
+For a more in-depth explanation, see [[https://www.reddit.com/r/emacs/comments/6jsz61/can_someone_explain_ivy_counsel_andor_swiper_to_me/][this post]].
+
+This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p.
+
+#+BEGIN_SRC emacs-lisp
+(use-package ivy
+  :diminish
+  :custom
+  (ivy-count-format "(%d/%d) ")
+  (ivy-height 20)
+  (ivy-use-selectable-prompt t)
+  (ivy-use-virtual-buffers t)
+  :config
+  (ivy-mode))
+#+END_SRC
+
+*** ivy-rich
+
+A friendlier interface for ivy. [[https://github.com/Yevgnen/ivy-rich][Source]]
+This config provided by https://ogbe.net/emacs/minimal.html
+
+#+BEGIN_SRC emacs-lisp
+(use-package ivy-rich
+  :after ivy
+  :hook ivy-mode
+  :custom
+  (ivy-virtual-abbreviate 'full)
+  (ivy-rich-switch-buffer-align-virtual-buffer t)
+  (ivy-rich-path-style 'abbrev)
+  (ivy-rich-parse-remote-buffer nil)
+  (ivy-rich-parse-remote-file-path nil)
+  :config
+  (ivy-set-display-transformer 'ivy-switch-buffer
+    'ivy-rich-switch-buffer-transformer))
+#+END_SRC
+
+** Counsel
+
+Counsel is a set of replacements for common emacs commands that leverages Ivy.
+
+This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p.
+
+#+BEGIN_SRC emacs-lisp
+(use-package counsel
+  :after ivy
+  :diminish
+  :bind* ; load when pressed
+  (("M-x"     . counsel-M-x)
+   ("C-s"     . counsel-grep-or-swiper)  ; was "swiper"
+   ("C-x C-f" . counsel-find-file)
+   ("C-x C-r" . counsel-recentf)  ; search for recently edited
+   ("C-c i"   . counsel-imenu)    ; search for sections in current buffer
+   ("C-c g"   . counsel-git)      ; search for files in git repo
+   ("C-c j"   . counsel-git-grep) ; search for regexp in git repo
+   ("C-c /"   . counsel-ag)       ; Use ag for regexp
+   ("C-x l"   . counsel-locate)
+   ("<f1> f"  . counsel-describe-function)
+   ("<f1> v"  . counsel-describe-variable)
+   ("<f1> l"  . counsel-find-library)
+   ("<f2> i"  . counsel-info-lookup-symbol)
+   ("<f2> u"  . counsel-unicode-char)
+   ("C-c C-r" . ivy-resume)))     ; Resume last Ivy-based completion
+#+END_SRC
+
+** ivy-prescient
+
+https://github.com/raxod502/prescient.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package ivy-prescient
+  :diminish
+  :hook (ivy-mode . ivy-prescient-mode))
+#+END_SRC
+
+* Company
+
+Company is an autocomplete framework that cares about buffer contents (as opposed to ivy, which cares about emacs-the-application)
+
+This is partially from https://www.reddit.com/r/emacs/comments/8z4jcs/tip_how_to_integrate_company_as_completion/
+
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :diminish
+  ;; Use "shift + tab" to manually trigger a completion if necessary
+  :bind (("<backtab>" . company-complete))
+  :custom
+  (company-begin-commands '(self-insert-command))
+  (company-idle-delay .1)
+  (company-minimum-prefix-length 2)
+  (company-show-numbers t)
+  (company-tooltip-align-annotations 't)
+  (global-company-mode t))
+
+
+(defun python--private-lessp (x y)
+  (cond
+   ((and (string-prefix-p "_" x)
+         (not (string-prefix-p "_" y))) nil)
+   ((and (string-prefix-p "_" y)
+         (not (string-prefix-p "_" x))) t)
+   (t (string-lessp x y))))
+
+(defun company-transform-python (candidates)
+  "De-prioritize internal/private Python variables (e.g. 
+  'var._blah') in completion list ordering.
+
+  See `company-transformers'."
+  (seq-sort-by 'company-strip-prefix 'python--private-lessp
+               candidates))
+
+(add-hook 'python-mode-hook 'company-transform-python)
+(add-hook 'inferior-python-mode-hook 'company-transform-python)
+
+#+END_SRC
+
+** company-prescient
+
+https://github.com/raxod502/prescient.el
+
+#+BEGIN_SRC emacs-lisp
+(use-package company-prescient
+  :diminish
+  :hook (company-mode . company-prescient-mode))
+
+(setq company-prescient-sort-length-enable nil)
+#+END_SRC
+
+* Modern Python IDE
+
+First, set up a virtualenv and `pip install python-language-server[all]`.
+
+Next, open a Python source code file. If anything does not autocomplete, use `M-x company-complete` to manually trigger such.
+
+** Dependency Packages
+
+#+BEGIN_SRC emacs-lisp
+(use-package highlight-indentation
+  :hook python-mode)
+(use-package flycheck
+  :diminish
+  :pin "melpa"
+  :hook python-mode)
+(use-package pyvenv
+  :hook python-mode)
+(use-package yasnippet
+  :diminish yas-minor-mode
+  :hook (python-mode . yas-minor-mode))
+#+END_SRC
+
+** lsp-mode and friends
+
+#+BEGIN_SRC emacs-lisp
+(use-package lsp-mode
+  :hook ((python-mode . lsp)))
+
+;; lsp extras
+(use-package lsp-ui
+  :after lsp-mode
+  :hook (
+    (python-mode . lsp-ui-mode))
+  :custom
+  (lsp-ui-sideline-ignore-duplicate t)
+  (lsp-ui-sideline-show-diagnostics t)
+  (lsp-ui-sideline-show-hover nil)
+  (lsp-ui-sideline-show-code-actions t))
+#+END_SRC
+
+* Markdown
+
+add something to enable `visual-line-mode` for .md files
+
+    ;; (use-package rst
+    ;;   :mode (("\\.txt$" . rst-mode)
+    ;;          ("\\.rst$" . rst-mode)
+    ;;          ("\\.rest$" . rst-mode)))
+
+* References/Graveyard
+
+** How to use use-package to configure a mode all in one place
+
+
+  ;; (use-package go-mode
+  ;;   :ensure t
+  ;;   :config
+  ;;   (progn
+  ;;     (defun my-go-mode-hook ()
+  ;;       (linum-mode t)
+  ;;       (setq tab-width 4)
+  ;;       (add-hook 'before-save-hook 'gofmt-before-save))
+  ;;     (add-hook 'go-mode-hook 'my-go-mode-hook)))
+
+Note that this works even for built-in packages!
+** Python IDE
+
+# #+BEGIN_SRC emacs-lisp-nope
+#   (use-package "elpy")
+#   (use-package "flycheck")
+#   (use-package "py-autopep8")
+#   (use-package "blacken")
+
+#   ;; Enable elpy
+#   (elpy-enable)
+
+#   ;; Enable Flycheck
+#   (when (require 'flycheck nil t)
+#     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules))
+#     (add-hook 'elpy-mode-hook 'flycheck-mode))
+
+#   ;; ;; Enable autopep8
+#   ;; (require 'py-autopep8)
+#   ;; (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+
+#   ;; (with-eval-after-load 'python
+#   ;;   (defun python-shell-completion-native-try ()
+#   ;;     "Return non-nil if can trigger native completion."
+#   ;;     (let ((python-shell-completion-native-enable t)
+#   ;;           (python-shell-completion-native-output-timeout
+#   ;;            python-shell-completion-native-try-output-timeout))
+#   ;;       (python-shell-completion-native-get-completions
+#   ;;        (get-buffer-process (current-buffer))
+#   ;;        nil "_"))))
+
+#   ;(setq python-shell-interpreter "ipython"
+#   ;      python-shell-interpreter-args "-i --simple-prompt")
+
+# #+END_SRC
+** neotree
+
+#+BEGIN_SRC emacs-lisp-DISABLED
+(use-package neotree
+  :init (require 'neotree)
+  :bind (("<f8>" . neotree-project-dir))
+  :custom
+  (neo-theme (if (display-graphic-p) 'icons 'arrow))
+  (neo-smart-open t)
+  :config
+  (use-package find-file-in-project))
+
+(defun neotree-project-dir ()
+  "Open NeoTree using the git root."
+  (interactive)
+  (let ((project-dir (ffip-project-root))
+    (file-name (buffer-file-name)))
+    (if project-dir
+    (progn
+      (neotree-dir project-dir)
+      (neotree-find file-name))
+      (message "Could not find git project root."))))
+#+END_SRC
+
+* Things to try
+** ogbe.net
+
+https://ogbe.net/emacs/minimal.html
+
+- try out the line numbers stuff
+-

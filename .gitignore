@@ -1,9 +1,14 @@
+*.elc
+.lsp-session-v1
 .smex-items
 auto-save-list
 backups
+config.el
 config/custom.el
+elpa
 places
+recentf
+smex-items
 tramp
 url
-*.elc
-elpa
+.#*
