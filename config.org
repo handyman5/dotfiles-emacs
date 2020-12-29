@@ -23,10 +23,10 @@ N.B. 2 `defer` is implied if automatic if :commands, :bind, :bind*,  :mode or :i
   (package-initialize)
 
   (setq package-archive-priorities
-	'(("melpa-stable" . 20)
+	'(("melpa" . 20)
 	  ("org" . 15)
 	  ("gnu" . 10)
-	  ("melpa" . 0)))
+	  ("melpa-stable" . 0)))
 
   ;; Setting up the package manager. Install if missing.
   (unless (package-installed-p 'use-package)
@@ -265,12 +265,10 @@ Next, open a Python source code file. If anything does not autocomplete, use `M-
 (use-package highlight-indentation
   :hook python-mode)
 (use-package flycheck
-  :ensure
   :diminish
-;  :pin melpa-stable
   :hook python-mode)
-;(use-package pyvenv
-;  :hook python-mode)
+(use-package pyvenv
+  :hook python-mode)
 (use-package yasnippet
   :diminish yas-minor-mode
   :hook (python-mode . yas-minor-mode))
