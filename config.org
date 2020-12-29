@@ -20,21 +20,7 @@ N.B. 2 `defer` is implied if automatic if :commands, :bind, :bind*,  :mode or :i
   (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/"))
   (setq package-enable-at-startup nil)
-  (setq use-package-always-ensure t)
   (package-initialize)
-
-  (setq package-archive-priorities
-	'(("melpa" . 20)
-	  ("org" . 15)
-	  ("gnu" . 10)
-	  ("melpa-stable" . 0)))
-
-  ;; Setting up the package manager. Install if missing.
-  (unless (package-installed-p 'use-package)
-    (package-refresh-contents)
-    (package-install 'use-package))
-  (eval-and-compile
-    (setq use-package-always-ensure t))
 
   (setq package-archive-priorities
 	'(("melpa-stable" . 20)
@@ -42,15 +28,24 @@ N.B. 2 `defer` is implied if automatic if :commands, :bind, :bind*,  :mode or :i
 	  ("gnu" . 10)
 	  ("melpa" . 0)))
 
-
+  ;; Setting up the package manager. Install if missing.
+  (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+  (eval-and-compile
+    (require 'use-package-ensure)
+    (setq use-package-always-ensure t))
 #+END_SRC
 
 * General Configuration
 
 ** Disable the startup and splash screens
 
+N.B. this package is built-in and cannot be downloaded, hence the `:ensure nil`.
+
 #+BEGIN_SRC emacs-lisp
 (use-package "startup"
+  :ensure nil
   :custom
   (inhibit-startup-screen t)
   (inhibit-splash-screen t))
@@ -270,11 +265,12 @@ Next, open a Python source code file. If anything does not autocomplete, use `M-
 (use-package highlight-indentation
   :hook python-mode)
 (use-package flycheck
+  :ensure
   :diminish
-  :pin "melpa"
+;  :pin melpa-stable
   :hook python-mode)
-(use-package pyvenv
-  :hook python-mode)
+;(use-package pyvenv
+;  :hook python-mode)
 (use-package yasnippet
   :diminish yas-minor-mode
   :hook (python-mode . yas-minor-mode))
