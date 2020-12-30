@@ -61,7 +61,7 @@ N.B. this package is built-in and cannot be downloaded, hence the `:ensure nil`.
 
 #+BEGIN_SRC emacs-lisp
 (use-package "monokai-pro-theme"
-  :init
+  :config
   (load-theme 'monokai-pro t))
 #+END_SRC
 
