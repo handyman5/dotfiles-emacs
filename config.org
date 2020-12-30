@@ -80,11 +80,28 @@ From https://ogbe.net/emacs/minimal.html
 
 #+BEGIN_SRC emacs-lisp
 (use-package whitespace
+  :custom
+  (show-trailing-whitespace t)
   :config
   (set-face-attribute 'trailing-whitespace nil :background "indian red")
-  (setq-default show-trailing-whitespace t))
+  (add-hook 'minibuffer-setup-hook
+          (lambda () (setq-local show-trailing-whitespace nil))))
 #+END_SRC
 
+** Disable garbage collection while the minibuffer is open
+
+From https://emacs.stackexchange.com/a/60588.
+
+#+BEGIN_SRC emacs-lisp
+(defun my-minibuffer-setup-hook ()
+  (setq gc-cons-threshold most-positive-fixnum))
+
+(defun my-minibuffer-exit-hook ()
+  (setq gc-cons-threshold 800000))
+
+(add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
+(add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
+#+END_SRC
 * Miscellaneous Useful Packages
 
 ** diminish
@@ -150,7 +167,6 @@ This config provided by https://ogbe.net/emacs/minimal.html
 #+BEGIN_SRC emacs-lisp
 (use-package ivy-rich
   :after ivy
-  :hook ivy-mode
   :custom
   (ivy-virtual-abbreviate 'full)
   (ivy-rich-switch-buffer-align-virtual-buffer t)
@@ -159,7 +175,8 @@ This config provided by https://ogbe.net/emacs/minimal.html
   (ivy-rich-parse-remote-file-path nil)
   :config
   (ivy-set-display-transformer 'ivy-switch-buffer
-    'ivy-rich-switch-buffer-transformer))
+    'ivy-rich-switch-buffer-transformer)
+  (ivy-rich-mode))
 #+END_SRC
 
 ** Counsel
@@ -207,38 +224,17 @@ Company is an autocomplete framework that cares about buffer contents (as oppose
 This is partially from https://www.reddit.com/r/emacs/comments/8z4jcs/tip_how_to_integrate_company_as_completion/
 
 #+BEGIN_SRC emacs-lisp
-(use-package company
-  :diminish
-  ;; Use "shift + tab" to manually trigger a completion if necessary
-  :bind (("<backtab>" . company-complete))
-  :custom
-  (company-begin-commands '(self-insert-command))
-  (company-idle-delay .1)
-  (company-minimum-prefix-length 2)
-  (company-show-numbers t)
-  (company-tooltip-align-annotations 't)
-  (global-company-mode t))
-
-
-(defun python--private-lessp (x y)
-  (cond
-   ((and (string-prefix-p "_" x)
-         (not (string-prefix-p "_" y))) nil)
-   ((and (string-prefix-p "_" y)
-         (not (string-prefix-p "_" x))) t)
-   (t (string-lessp x y))))
-
-(defun company-transform-python (candidates)
-  "De-prioritize internal/private Python variables (e.g. 
-  'var._blah') in completion list ordering.
-
-  See `company-transformers'."
-  (seq-sort-by 'company-strip-prefix 'python--private-lessp
-               candidates))
-
-(add-hook 'python-mode-hook 'company-transform-python)
-(add-hook 'inferior-python-mode-hook 'company-transform-python)
-
+  (use-package company
+    :diminish
+    ;; Use "shift + tab" to manually trigger a completion if necessary
+    :bind (("<backtab>" . company-complete))
+    :custom
+    (company-begin-commands '(self-insert-command))
+    (company-idle-delay .1)
+    (company-minimum-prefix-length 2)
+    (company-show-numbers t)
+    (company-tooltip-align-annotations 't)
+    (global-company-mode t))
 #+END_SRC
 
 ** company-prescient
@@ -351,9 +347,35 @@ Note that this works even for built-in packages!
 #   ;      python-shell-interpreter-args "-i --simple-prompt")
 
 # #+END_SRC
+
+** Sort company python to deprioritize internal methods
+
+This seems not to be necessary at the moment and I'm not sure why.
+
+#+BEGIN_SRC
+  ;; (defun python--private-lessp (x y)
+  ;;   (cond
+  ;;    ((and (string-prefix-p "_" x)
+  ;;          (not (string-prefix-p "_" y))) nil)
+  ;;    ((and (string-prefix-p "_" y)
+  ;;          (not (string-prefix-p "_" x))) t)
+  ;;    (t (string-lessp x y))))
+
+  ;; (defun company-transform-python (candidates)
+  ;;   "De-prioritize internal/private Python variables (e.g. 
+  ;;   'var._blah') in completion list ordering.
+
+  ;;   See `company-transformers'."
+  ;;   (seq-sort-by 'company-strip-prefix 'python--private-lessp
+  ;;                candidates))
+
+  ;(add-hook 'python-mode-hook 'company-transform-python)
+  ;(add-hook 'inferior-python-mode-hook 'company-transform-python)
+#+END_SRC
+
 ** neotree
 
-#+BEGIN_SRC emacs-lisp-DISABLED
+#+BEGIN_SRC
 (use-package neotree
   :init (require 'neotree)
   :bind (("<f8>" . neotree-project-dir))
