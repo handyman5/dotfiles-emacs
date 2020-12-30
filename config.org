@@ -16,6 +16,7 @@ Clean up the UI and enhance some basic defaults defined in "C Source Code". The 
 
     (tool-bar-mode -1)
     (menu-bar-mode -1)
+    (tabbar-mode -1)
 
     ;; better scrolling experience
     (setq scroll-margin 0
@@ -203,7 +204,8 @@ Normally, we need to add ~:ensure t~ to tell ~use-package~ to download packages 
 *** Load custom theme
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-  (load-theme 'wilmersdorf t)
+  ;(load-theme 'wilmersdorf t)
+  (load-theme 'wombat t)
 #+END_SRC
 *** Dashboard welcome page (commented out)
 #+BEGIN_SRC emacs-lisp
@@ -333,47 +335,71 @@ Provides us with hints on available keystroke combinations.
     (company-prescient-mode +1)
 )
 #+END_SRC
+
 #+BEGIN_SRC emacs-lisp
-    (use-package ivy
-      :config
-      (ivy-mode +1)
-      (counsel-mode +1)
-      (setq ivy-use-virtual-buffers t)
-      (setq enable-recursive-minibuffers t)
-      (setq ivy-initial-inputs-alist nil)
-      ;; enable this if you want `swiper' to use it
-      ;; (setq search-default-mode #'char-fold-to-regexp)
-      (global-set-key "\C-s" 'swiper)
-      (global-set-key (kbd "C-c C-r") 'ivy-resume)
-      (global-set-key (kbd "<f6>") 'ivy-resume)
-      ;; (global-set-key (kbd "M-x") 'counsel-M-x)
-      ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
-      ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
-      ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
-      ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
-      ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
-      ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
-      ;; (global-set-key (kbd "C-c g") 'counsel-git)
-      ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
-      ;; (global-set-key (kbd "C-c k") 'counsel-ag)
-      ;; (global-set-key (kbd "C-x l") 'counsel-locate)
-      ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
-      (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-  )
+   (use-package ivy :ensure t
+     :diminish (ivy-mode . "")
+     :bind
+     (:map ivy-mode-map
+      ; https://github.com/abo-abo/avy
+      ("C-'" . ivy-avy))
+     :config
+     (ivy-mode +1)
+     (counsel-mode +1)
+     ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’.
+     (setq ivy-use-virtual-buffers t)
+     ;; ?
+     (setq enable-recursive-minibuffers t)
+     ;; number of result lines to display
+     ;;(setq ivy-height 10)
+     ;; does not count candidates
+     ;;(setq ivy-count-format "")
+     ;; no regexp by default
+     (setq ivy-initial-inputs-alist nil)
+     ;; configure regexp engine.
+     (setq ivy-re-builders-alist
+       ;; allow input not in order
+           '((t   . ivy--regex-ignore-order)))
 
-  (use-package mac-pseudo-daemon
-    :config
-    (mac-pseudo-daemon-mode +1)
-  )
+     (ivy-rich-mode +1)
+     ;(ivy-explorer-mode +1)
 
-  ;; (defadvice handle-delete-frame (around my-handle-delete-frame-advice activate)
-  ;; "Hide Emacs instead of closing the last frame"
-  ;; (let ((frame   (posn-window (event-start event)))
-  ;;       (numfrs  (length (frame-list))))
-  ;;   (if (> numfrs 1)
-  ;;     ad-do-it
-  ;;      (do-applescript "tell application \"System Events\" to tell process \"Emacs\" to set visible to false"))))
+     ;; this only works in the GUI and errors in the terminal
+     ;; https://github.com/clemera/ivy-explorer
+     ;;(setq ivy-explorer-message-function 'ivy-explorer-posframe)
 
+     ;; enable this if you want `swiper' to use it
+     ;; (setq search-default-mode #'char-fold-to-regexp)
+     (global-set-key "\C-s" 'swiper)
+     (global-set-key (kbd "C-c C-r") 'ivy-resume)
+     (global-set-key (kbd "<f6>") 'ivy-resume)
+     ;; (global-set-key (kbd "M-x") 'counsel-M-x)
+     ;; (global-set-key (kbd "C-x C-f") 'counsel-find-file)
+     ;; (global-set-key (kbd "<f1> f") 'counsel-describe-function)
+     ;; (global-set-key (kbd "<f1> v") 'counsel-describe-variable)
+     ;; (global-set-key (kbd "<f1> l") 'counsel-find-library)
+     ;; (global-set-key (kbd "<f2> i") 'counsel-info-lookup-symbol)
+     ;; (global-set-key (kbd "<f2> u") 'counsel-unicode-char)
+     ;; (global-set-key (kbd "C-c g") 'counsel-git)
+     ;; (global-set-key (kbd "C-c j") 'counsel-git-grep)
+     ;; (global-set-key (kbd "C-c k") 'counsel-ag)
+     ;; (global-set-key (kbd "C-x l") 'counsel-locate)
+     ;; (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+     (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+   )
+
+     (use-package mac-pseudo-daemon
+       :config
+       (mac-pseudo-daemon-mode +1)
+     )
+
+     ;; (defadvice handle-delete-frame (around my-handle-delete-frame-advice activate)
+     ;; "Hide Emacs instead of closing the last frame"
+     ;; (let ((frame   (posn-window (event-start event)))
+     ;;       (numfrs  (length (frame-list))))
+     ;;   (if (> numfrs 1)
+     ;;     ad-do-it
+     ;;      (do-applescript "tell application \"System Events\" to tell process \"Emacs\" to set visible to false"))))
 
 #+END_SRC
 ** Config from old .emacs.d
@@ -540,7 +566,7 @@ Provides us with hints on available keystroke combinations.
 ;; (global-set-key [c-up] (ignore-error-wrapper 'windmove-up))
 ;; (global-set-key [c-down] (ignore-error-wrapper 'windmove-down))
 #+END_SRC
-** modes.js
+** modes.el
 #+BEGIN_SRC emacs-lisp
 (autoload #'puppet-mode "puppet-mode" "Start puppet-mode" t)
 (add-to-list 'auto-mode-alist '("\\.pp$" . puppet-mode))
@@ -573,6 +599,429 @@ Provides us with hints on available keystroke combinations.
   (setq js-indent-level 2)
   (setq indent-tabs-mode nil))
 (add-hook 'js-mode-hook 'my-js-mode-hook)
+#+END_SRCl
+** orgmode.el
+#+BEGIN_SRC emacs-lisp
+
+;;;
+;;; Org Mode
+;;;
+
+;;;;;;;;;;;;;;; org-mode ;;;;;;;;;;;;;;;
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+(require 'org)
+
+;; disable org-journal keybindings
+(define-key org-mode-map "\C-c\C-s" nil)
+(define-key org-mode-map "\C-c\C-f" nil)
+(define-key org-mode-map "\C-c\C-b" nil)
+(define-key org-mode-map "\C-c\C-j" nil)
+
+;(require 'org-protocol)
+(setq org-refile-use-outline-path 'file)
+(setq org-refile-targets (quote (
+                                 (nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 6)
+                                 (org-agenda-files :tag . "heading")
+                                 (org-agenda-files :tag . "project")
+                                 (org-agenda-files :todo . "PROJ")
+                                 )))
+(setq org-completion-use-ido nil)
+(setq org-outline-path-complete-in-steps nil)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-use-cache t)
+(run-with-idle-timer 300 t (lambda ()
+                             (org-refile-cache-clear)
+                             (org-refile-get-targets)))
+
+;; Adding TODO keywords
+;; http://orgmode.org/manual/Workflow-states.html#Workflow-states
+(setq org-todo-keywords '((sequence "TODO(t)" "LIVE(l)" "WAIT(w)" "|"
+                                    "SOMEDAY(s)" "WONT(n)" "DONE(d)" "PROJ(p)")))
+
+;; make org files quite a bit prettier -- http://doc.rix.si/cce/cce-org.html#org635a684
+;(require 'org-indent)
+;(setq org-startup-indented t)
+;(diminish 'org-indent-mode )
+(setq org-hide-leading-stars nil)
+(setq org-cycle-separator-lines 2)
+
+
+
+;;;;;;;;;;;;;;; org-agenda ;;;;;;;;;;;;;;;
+(define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map (kbd "<f12>")
+          (lambda () (interactive) (org-agenda nil "a")))
+;(setq org-agenda-files (list "~/org" "~/org/journal"))
+(setq org-agenda-file-regexp "\\`[^.].*\\.org\\'\\|\\`[0-9]+\\'")
+
+
+;;;;;;;;;;;;;;; org-journal ;;;;;;;;;;;;;;;
+(defvar org-journal-dir (concat org-directory "/journal"))
+(require 'org-journal)
+(setq org-journal-carryover-items nil)
+(setq org-journal-enable-agenda-integration t)
+(setq org-journal-time-format "<%Y-%m-%d %a %H:%M> ")
+
+(define-key global-map "\C-cj" 'org-journal-new-scheduled-entry)
+
+
+
+(defun org-journal-find-location ()
+  ;; Open today's journal, but specify a non-nil prefix argument in order to
+  ;; inhibit inserting the heading; org-capture will insert the heading.
+  (org-journal-new-entry t)
+  ;; Position point on the journal's top-level heading so that org-capture
+  ;; will add the new entry as a child entry.
+  (goto-char (point-min)))
+
+
+;;;;;;;;;;;;;;; org-capture ;;;;;;;;;;;;;;;
+;; http://orgmode.org/manual/Setting-up-capture.html#Setting-up-capture
+(setq org-default-notes-file (concat org-directory "/activity.org"))
+(define-key global-map "\C-cc" 'org-capture)
+(define-key org-mode-map "\C-cl" 'org-store-link)
+(define-key org-mode-map "\C-ci" 'org-insert-last-stored-link)
+
+
+
+;; make the frame contain a single window. by
+;; default org-remember splits the window.
+;; CRITICAL
+(add-hook 'org-capture-mode-hook
+          'delete-other-windows)
+
+;; CRITICAL
+(defun make-capture-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "*Capture*")
+                 (width . 80)
+                 (height . 40)
+                 (vertical-scroll-bars . nil)
+                 (menu-bar-lines . nil)
+                 (tool-bar-lines . nil)))
+  (select-frame-by-name "*Capture*")
+  (delete-other-frames)
+  (org-capture nil)
+)
+
+(setq org-capture-templates
+      (quote (
+("n" "Notes (inbox.org)" entry (file+headline
+org-default-notes-file "Activity")
+"* %^{Description} %^g %?
+Added: %U")
+
+)))
+
+;; ("j" "Journal Entry (daily file)" entry (function org-journal-find-location)
+;; "** %T - %^{Activity}")
+
+;; ("a" "Appointment" entry (file+headline
+;; org-default-notes-file "Calendar")
+;; "* APPT %^{Description} %^g
+;; %?
+;; Added: %U")
+
+; ("t" "Task Diary" entry (file+datetree
+; org-default-notes-file)
+; "* TODO %^{Description}  %^g
+; %?
+; Added: %U")
+
+;; ("j" "Journal entry" entry (function org-journal-find-location)
+;; "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
+;; ;"* %(format-time-string org-journal-time-format)%i%?")
+
+
+
+;; Notes
+;; in-buffer settings: http://orgmode.org/manual/In_002dbuffer-settings.html
+;; cheat sheet: http://orgmode.org/orgcard.txt
+
+;;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
+
+(defun air-org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+(setq org-agenda-custom-commands
+      '(("c" "Simple agenda view"
+         ((tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+          (agenda "")
+          (alltodo ""
+                   ((org-agenda-skip-function
+                     '(or (air-org-skip-subtree-if-priority ?A)
+                          (org-agenda-skip-if nil '(scheduled deadline))))))))))
+
+
+(defun air-pop-to-org-agenda (&optional split)
+  "Visit the org agenda, in the current window or a SPLIT."
+  (interactive "P")
+  (org-agenda nil "c")
+  (when (not split)
+    (delete-other-windows)))
+
+(define-key global-map (kbd "M-SPC") 'air-pop-to-org-agenda)
+
+;;;;;;;;;;;;;;; org-babel ;;;;;;;;;;;;;;;
+
+;; http://cachestocaches.com/2018/6/org-literate-programming/
+
+;; Run/highlight code using babel in org-mode
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   (python . t)
+   (shell . t)
+   ;; Include other languages here...
+   ))
+;; Syntax highlight in #+BEGIN_SRC blocks
+(setq org-src-fontify-natively t)
+;; Don't prompt before running code in org
+(setq org-confirm-babel-evaluate nil)
+;; Fix an incompatibility between the ob-async and ob-ipython packages
+(setq ob-async-no-async-languages-alist '("ipython"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; archived
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; #+TITLE: Adam's Org-mode Emacs configuration
+;; #+OPTIONS: toc:4 h:4
+;; #+STARTUP: showeverything
+;; #+PROPERTY: header-args:emacs-lisp    :tangle yes
+;;
+;; * Configuration
+;; ** About this file
+;;    :PROPERTIES:
+;;    :CUSTOM_ID: babel-init
+;;    :END:
+;; <<babel-init>>
+;;
+;;
+;; ** Starting up
+;;
+;; #+begin_src emacs-lisp
+;; ;; This sets up the load path so that we can override it
+;; (package-initialize)
+;; #+END_SRC
+
+; (setq org-capture-templates '(("j" "Journal entry" entry (function org-journal-find-location)
+;                                "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")))
+;
+
+; (defun pc/new-buffer-p ()
+;     (not (file-exists-p (buffer-file-name))))
+;
+;   (defun pc/insert-journal-template ()
+;     (let ((template-file (expand-file-name "template.org" org-directory)))
+;       (when (pc/new-buffer-p)
+;         (save-excursion
+;           (goto-char (point-min))
+;           (insert-file-contents template-file)))))
+;
+;   (add-hook 'org-journal-after-entry-create-hook #'pc/insert-journal-template)
+
+;(setq org-journal-date-prefix "** ")
+
+;; TODO: set up all journal files to be included in the agenda generation guy
+
+(defun bh/verify-refile-target ()
+  "Exclude todo keywords with a done state from refile targets"
+  (member (nth 5 (org-heading-components)) (quote "project"))) ;Note - "org-done-keywords"?
+
+(defun bh/verify-refile-target2 ()
+  "Exclude todo keywords with a done state from refile targets"
+  (member (nth 2 (org-heading-components)) (quote "DONE"))) ;Note - "org-done-keywords"?
+
+;;(setq org-refile-target-verify-function 'bh/verify-refile-target2)
+
+
+;;(setq helm-org-headings-fontify t)
+
+
+;; (setq org-capture-templates '(
+;;
+;;       ("t" "Todo list item"
+;;        entry (file+headline org-default-notes-file "Tasks")
+;;        "* TODO %?\n %i\n %a"
+;;        )
+;;
+;;       ("p" "Project idea"
+;;        entry (file+headline org-default-notes-file "Projects")
+;;        "** PROJ %?\n %i\n %a"
+;;        )
+;;
+;;       ("b" "Tidbit: quote, zinger, one-liner or textlet"
+;;        entry
+;;        (file+headline org-default-notes-file "Tidbits")
+;;        "* %^{Name} captured %U\n%^{Tidbit type|quote|zinger|one-liner|textlet}\nPossible Inspiration: %a %i\n%?"
+;;        )
+;;
+;;       ("l" "A link, for reading later." entry
+;;        (file+headline "notes.org" "Reading List")
+;;        "* %:description\n%u\n\n%c\n\n%i"
+;;                 :empty-lines 1)
+;;
+;;       ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+;;        "* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
+;;        :empty-lines 1)
+;;
+;;
+;;       ))
+
+; ("k" "Journal entry" entry (function org-journal-find-location)
+;                                "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
+;
+; ("f" "Journal entry" plain
+; (file+datetree+prompt "~/org/journal2.org")
+; "%K - %a\n%i\n%?\n")
+
+
+
+
+
+
+
+; (defun org-agenda-show-tasks (&optional arg)
+;   (interactive "P")
+;   (org-agenda arg "a"))
+; (define-key org-mode-map (kbd "<f12>") 'org-agenda-show-tasks)
+
+; ;; Org-mode settings
+; (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+; (global-set-key "\C-ca" 'org-agenda)
+; (setq org-cycle-emulate-tab 'white)
+
+;; ;; org2blog support
+;; ;; https://github.com/punchagan/org2blog
+;; (require 'org2blog-autoloads)
+;; (setq org2blog/wp-use-sourcecode-shortcode t)
+;; (setq org2blog/wp-blog-alist
+;;        '(("ajc"
+;;           :url "http://ajcsystems.com/blog/xmlrpc.php"
+;;           :username "adamc"
+;;           :default-title "Hello World"
+;;           :default-categories ("org2blog" "emacs")
+;;           :tags-as-categories nil)))
+;;
+;; (setq org2blog/wp-buffer-template
+;; "#+DATE: %s
+;; #+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil TeX:nil
+;; #+CATEGORY:
+;; #+TAGS:
+;; #+PERMALINK:
+;; #+TITLE:
+;; \n
+;; #+HTML: <!--more-->
+;; \n")
+
+; ;; http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+;
+; (setq org-agenda-custom-commands-222
+;       '(("Q" . "Custom queries") ;; gives label to "Q"
+;         ;("Qa" "Archive search" search ""
+;         ; ((org-agenda-files (file-expand-wildcards "~/org/archive/*.org"))))
+;         ;("Qb" "Projects and Archive" search ""
+;         ; ((org-agenda-text-search-extra-files (file-expand-wildcards "~/org/archive/*.org"))))
+;         ;; searches both projects and archive directories
+;         ;("QA" "Archive tags search" org-tags-view ""
+;         ; ((org-agenda-files (file-expand-wildcards "~/org/archive/*.org"))))
+;         ;; ...other commands here
+;         ("P" "Projects" search ""
+;          ((org-agenda-text-search-extra-files (file-expand-wildcards "~/org/projects/*.org"))))
+;         )
+;       )
+;
+                                        ;
+
+; ;; Use '-' as the bullet list exclusively.
+; (setq org-list-demote-modify-bullet '(("+" . "-")
+;                                       ("*" . "-")
+;                                       ("1." . "-")
+;                                       ("1)" . "-")
+;                                       ("A)" . "-")
+;                                       ("B)" . "-")
+;                                       ("a)" . "-")
+;                                       ("b)" . "-")
+;                                       ("A." . "-")
+;                                       ("B." . "-")
+;                                       ("a." . "-")
+;                                       ("b." . "-")))
+
+
+
+; (setq daypage-path "~/org/daypages/")
+;
+; (defun tom-show-agenda ()
+;   (interactive)
+;   (delete-other-windows)
+;   (org-agenda-list)
+;   (calendar)
+;   (other-window 1)
+;   (split-window-vertically)
+;   (other-window 1)
+;   (todays-daypage))
+;
+;
+; (require 'org-daypage)
+;
+
+
+;;;; this put entries into a single file
+; ("j" "Journal" entry (file+datetree org-journal-file)
+;  "* %?\n\n  %i\n  Time: %U\n  From: %a"
+;  :empty-lines 1)
+;(defvar org-journal-file (concat org-directory "/journal.org")
+;    "Path to OrgMode journal file.")
+
+
+;; (defun org-journal-find-location ()
+;;   ;; Open today's journal, but specify a non-nil prefix argument in order to
+;;   ;; inhibit inserting the heading; org-capture will insert the heading.
+;;   (org-journal-new-entry t)
+;;   ;; Position point on the journal's top-level heading so that org-capture
+;;   ;; will add the new entry as a child entry.
+;;   (goto-char (point-min)))
+;;
+;; (defun get-journal-file-today ()
+;;   "Return filename for today's journal entry."
+;;   (let ((daily-name (format-time-string "%Y%m%d")))
+;;     (expand-file-name (concat org-directory "/journal/" daily-name))))
+;;
+;; (defun journal-file-today ()
+;;   "Create and load a journal file based on today's date."
+;;   (interactive)
+;;   (find-file (get-journal-file-today)))
+;;
+;; (global-set-key (kbd "C-c f j") 'journal-file-today)
+;;
+;; (add-to-list 'load-path (expand-file-name "~/git/org-mode/lisp"))
+
+
+(defun org-search ()
+  (interactive)
+  (org-refile '(4)))
+(define-key global-map "\C-c\C-g" 'org-search)
+;;
+
+; disable SLOW SLOW flyspell
+(flyspell-mode -1)
+
+
+
 #+END_SRC
 ** parens.el
 #+BEGIN_SRC emacs-lisp
@@ -612,7 +1061,8 @@ Provides us with hints on available keystroke combinations.
   ;; ;(color-theme-molokai)
   ;; ;(color-theme-colorful-obsolescence)
 
-  (set-face-background 'hl-line "color-52")
+  ; this appears to be broken
+  ;(set-face-background 'hl-line "color-52")
   ;; M-x helm-colors to see the available options
 
 
@@ -620,4 +1070,17 @@ Provides us with hints on available keystroke combinations.
   ;(load-theme 'zenburn t)
   ;(color-theme-clarity)
   ;(color-theme-tty-dark)
+#+END_SRC
+* Other config
+** tabbar.el
+https://www.emacswiki.org/emacs/TabBarMode
+i need to figure out how to turn this on only for graphical frames :-P
+M-x tabbar-mode
+** org-journal-list
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package org-journal-list
+  ;;        :ensure t
+  ;;        :config
+  ;;        (setq org-journal-list-default-directory "~/org/journal/")
+  ;;        (setq org-journal-list-default-suffix ".org"))
 #+END_SRC
