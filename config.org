@@ -2,6 +2,11 @@
 #+Author: Adam Compton
 #+Date: 2020
 
+* Tips
+
+  - After loading, you can use M-x describe-personal-keybindings to see all such keybindings you’ve set throughout your .emacs file.
+  - 
+
 * Enable use-package
 
 This stanza comes before all others, and enables the use of the wonderful `use-package` function.
@@ -179,6 +184,20 @@ This config provided by https://ogbe.net/emacs/minimal.html
   (ivy-rich-mode))
 #+END_SRC
 
+*** ivy-avy
+
+[[https://github.com/abo-abo/avy][`avy` is a GNU Emacs package]] for jumping to visible text using a char-based decision tree. 
+
+#+BEGIN_SRC emacs-lisp
+(use-package avy
+  :bind ("C-'" . avy-goto-char-timer))
+
+(use-package ivy-avy
+  :after ivy
+  :bind (:map ivy-minibuffer-map)
+         ("C-'" . ivy-avy))
+#+END_SRC
+
 ** Counsel
 
 Counsel is a set of replacements for common emacs commands that leverages Ivy.
@@ -197,7 +216,7 @@ This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can
    ("C-c i"   . counsel-imenu)    ; search for sections in current buffer
    ("C-c g"   . counsel-git)      ; search for files in git repo
    ("C-c j"   . counsel-git-grep) ; search for regexp in git repo
-   ("C-c /"   . counsel-ag)       ; Use ag for regexp
+   ("C-c y"   . counsel-yank-pop)
    ("C-x l"   . counsel-locate)
    ("<f1> f"  . counsel-describe-function)
    ("<f1> v"  . counsel-describe-variable)
@@ -232,6 +251,7 @@ This is partially from https://www.reddit.com/r/emacs/comments/8z4jcs/tip_how_to
     (company-begin-commands '(self-insert-command))
     (company-idle-delay .1)
     (company-minimum-prefix-length 2)
+    (company-selection-wrap-around t)
     (company-show-numbers t)
     (company-tooltip-align-annotations 't)
     (global-company-mode t))
@@ -404,3 +424,7 @@ https://ogbe.net/emacs/minimal.html
 
 - try out the line numbers stuff
 -
+** learn more about dabbrevs
+
+https://www.emacswiki.org/emacs/DynamicAbbreviations
+
