@@ -837,6 +837,8 @@ and escape sequences.
 
  Next, open a Python source code file. If anything does not autocomplete, use ~M-x company-complete~ to manually trigger such.
 
+N.B. The file you're working on needs to be part of a project for ~lsp~ to work. If you blacklisted it, remove ~$HOME/.emacs.d/.lsp-session-v1~ to get another shot.
+
 *** Dependency Packages
 
  #+BEGIN_SRC emacs-lisp
