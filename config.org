@@ -599,7 +599,7 @@ Provides us with hints on available keystroke combinations.
   (setq js-indent-level 2)
   (setq indent-tabs-mode nil))
 (add-hook 'js-mode-hook 'my-js-mode-hook)
-#+END_SRCl
+#+END_SRC
 ** orgmode.el
 #+BEGIN_SRC emacs-lisp
 
