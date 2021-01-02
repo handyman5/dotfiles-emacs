@@ -82,6 +82,7 @@ collapsed headers.
 ** Tips
 
 - After loading, you can use ~M-x describe-personal-keybindings~ to see all such keybindings you’ve set throughout your .emacs file.
+  - ~global-set-key~s do not show up in this list. :'(
 - To enable soft line-wrapping (word wrapping as a visual effect without actually inserting newlines), run ~visual-line-mode~. See [[https://www.emacswiki.org/emacs/LineWrap][LineWrap]] for more information.
 
 
