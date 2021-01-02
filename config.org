@@ -1,22 +1,153 @@
-#+Title: My Emacs Config
+#+Title: The Book of My Emacs
 #+Author: Adam Compton
-#+Date: 2020
+#+Date: 2021
 
-* Tips
+This is my emacs configuration. In it is a comprehensive examination
+of all of the customizations and settings I use, along with
+explanations of what they do, why they're set, potential alternatives
+for future reference, and sourcing.
 
-  - After loading, you can use M-x describe-personal-keybindings to see all such keybindings you’ve set throughout your .emacs file.
-  - 
+I aspire to something as amazing as [[https://blog.sumtypeofway.com/posts/emacs-config.html][this guy's]].
 
-* Enable use-package
+N.B. I'll also add references so I can search for the right way to
+accomplish various uncommon tasks when I need them.
 
-This stanza comes before all others, and enables the use of the wonderful `use-package` function.
+* User Manual
+
+/(This section contains day-to-day guidance on important modes, key
+bindings, etc. as a quick reference.)/
+
+** Buffer Navigation
+
+There are several ways to get around a buffer. Here are some of them,
+for easy reference.
+
+**QUICK REFERENCE:**
+
+- To jump to **headings**, use ~C-c o~ (~counsel-outline~)
+- To jump to **programming symbols**, use ~C-c i~ (~counsel-imenu~)
+- To jump to **arbitrary characters**, use ~C-'~ (~avy~)
+  - Note that this also works inside ~ivy~ buffers!
+
+*** prog-mode
+
+**** imenu
+
+~imenu~ creates an index of interesting things in a buffer. This is
+mostly only useful in a ~prog-mode~ buffer, since ~text-mode~ text is
+insufficiently structured (but it does navigate to headers in
+Markdown and ~org-mode~).
+
+It's activated by ~C-c i~. See [[* Counsel][Counsel]].
+
+N.B. imenu can only jump to org-mode headers that are currently
+visible in the buffer, so it doesn't see collapsed headers.
+
+**** avy
+
+~avy-goto-char-timer~ takes any number of characters, itemizes each
+instance in the file, and puts friendly letters in front of each
+instance. Typying the given character or characters will jump to that
+instance.
+
+It's activated by ~C-'~. See [[ivy-avy]]
+
+**** xref
+
+~xref-find-definition~ will attempt to find the definition of the
+symbol at point. Note that you can return to the use of the symbol you
+jumped from with ~M-,~.
+
+It's activated by ~M-.~
+
+***** dumb-jump
+
+~dumb-jump~ provides an additional ~xref~ background based around
+grepping through files instead of proactively establishing a number of
+TAGS tables.
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package dumb-jump
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
+#+END_SRC
+
+
+
+*** text-mode
+
+**** counsel-outline
+
+For ~org-mode~ files, ~counsel-outline~ will jump to an org heading
+anywhere in your agenda.
+
+~counsel-imenu~ seems to work pretty similarly, but it doesn't see
+collapsed headers.
+
+**** ~goto-line~
+
+~goto-line~ will jump to an arbitrary line number. I have it bound to
+~M-g~, but the default is ~M-g g~.
+
+
+** Tips
+
+- After loading, you can use ~M-x describe-personal-keybindings~ to see all such keybindings you’ve set throughout your .emacs file.
+- To enable soft line-wrapping (word wrapping as a visual effect without actually inserting newlines), run ~visual-line-mode~. See [[https://www.emacswiki.org/emacs/LineWrap][LineWrap]] for more information.
+
+
+** org-mode
+
+- [[https://orgmode.org/manual/Markup-for-Rich-Contents.html#Markup-for-Rich-Contents][syntax 1]]
+- [[https://orgmode.org/worg/dev/org-syntax.html][syntax 2]]
+- [[https://orgmode.org/manual/Motion.html][motion]]
+- [[https://orgmode.org/manual/Structure-Editing.html][structure editing]]
+
+
+*** Publish org document to HTML
+
+Use ~org-export-dispatch~ to publish a document to HTML (or anything
+else). Invoke it with ~C-c e~. See [[https://orgmode.org/manual/The-Export-Dispatcher.html#The-Export-Dispatcher][The Export Dispatcher]] for more options.
+
+
+** Notable keybindings
+
+  - ~C-'~: ~avy-goto-char-timer~
+
+
+* General Configuration 
+
+** Getting Started
+
+These things have to go first since they affect how the rest of the
+init file is imported and run.
+
+I can't say I understand this, exactly, but I'm happy to cargo-cult it
+until I do. [[https://nullprogram.com/blog/2016/12/22/][This article]] explains what is going on.
+
+#+BEGIN_SRC emacs-lisp
+(setq lexical-binding t)
+#+END_SRC
+
+Let's raise the garbage-collection threshold, shall we?
+
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold 100000000)
+#+END_SRC
+
+
+** Enable use-package
+
+This stanza comes before (almost) all others, and enables the use of the wonderful ~use-package~ function.
 
 [[https://www.masteringemacs.org/article/spotlight-use-package-a-declarative-configuration-tool][This is an excellent reference]] for configuring use-package.
 
-N.B. [[https://emacs.stackexchange.com/a/10403][the difference]] between `init` and `config` is that `init` is run when emacs starts but `config` is run when the package is loaded
-N.B. 2 `defer` is implied if automatic if :commands, :bind, :bind*,  :mode or :interpreter are used
+N.B. [[https://emacs.stackexchange.com/a/10403][the difference]] between ~init~ and ~config~ is that ~init~ is run when emacs starts but ~config~ is run when the package is loaded
+N.B. 2 ~defer~ is implied if automatic if :commands, :bind, :bind*,  :mode or :interpreter are used
 
-`package-archive-priorities` is from https://emacs.stackexchange.com/a/22261.
+~package-archive-priorities~ is from https://emacs.stackexchange.com/a/22261.
 
 #+BEGIN_SRC emacs-lisp
   (require 'package)
@@ -42,11 +173,167 @@ N.B. 2 `defer` is implied if automatic if :commands, :bind, :bind*,  :mode or :i
     (setq use-package-always-ensure t))
 #+END_SRC
 
-* General Configuration
+
+** Fixing defaults
+
+*** UTF-8
+
+Always use UTF-8 for everything.
+
+#+BEGIN_SRC emacs-lisp
+(set-charset-priority 'unicode)
+(setq locale-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system 'utf-8)
+(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+#+END_SRC
+
+
+*** Display line and column numbers
+
+#+BEGIN_SRC emacs-lisp
+(global-display-line-numbers-mode t)
+
+(use-package simple
+    :ensure nil
+    :config (column-number-mode +1))
+#+END_SRC
+
+
+*** Remove autosave clutter
+
+#+BEGIN_SRC emacs-lisp
+(setq
+ make-backup-files nil
+ auto-save-default nil
+ create-lockfiles nil)
+#+END_SRC
+
+
+*** Stop modifying ~init.el~
+
+Customize writes customizations to either ~init.el~ or to ~custom-file~, /even if they're made automatically./ Throw those away.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package cus-edit
+    :ensure nil
+    :config
+    (setq custom-file (make-temp-file "")))
+#+END_SRC
+
+
+*** Other defaults
+
+/(These defaults courtesy of [[https://github.com/ianpan870102/yay-evil-emacs][yay-evil-emacs]].)/
+
+Clean up the UI and enhance some basic defaults defined in "C Source
+Code". The variable ~ian/indent-width~ controls the default
+indentation across various programming modes. The default is 4,
+you can change this variable to 2 or any other indentation width you
+prefer, and the change will be made across all programming language
+modes including C, C++, Java, JavaScript, Python etc.
+
+#+BEGIN_SRC emacs-lisp
+  (use-package emacs
+    :preface
+    (defvar ian/indent-width 4) ; change this value to your preferred width
+    :config
+    (setq ;frame-title-format '("Yay-Evil") ; Yayyyyy Evil!
+          ;ring-bell-function 'ignore       ; minimise distraction
+          frame-resize-pixelwise t
+          default-directory "~/")
+
+    (tool-bar-mode -1)
+    (menu-bar-mode -1)
+;    (tabbar-mode -1)
+
+    ;; increase line space for better readability
+    (setq-default line-spacing 3)
+
+    ;; Always use spaces for indentation
+    (setq-default indent-tabs-mode nil
+                  tab-width ian/indent-width))
+
+#+END_SRC
+
+
+*** Better window splitting
+
+/[[https://github.com/ianpan870102/yay-evil-emacs][(from yay-evil-emacs)]]/
+
+The Emacs default split doesn't seem too intuitive for the majority of users.
+#+BEGIN_SRC emacs-lisp
+  (use-package "window"
+    :ensure nil
+    :preface
+    (defun ian/split-and-follow-horizontally ()
+      "Split window below."
+      (interactive)
+      (split-window-below)
+      (other-window 1))
+    (defun ian/split-and-follow-vertically ()
+      "Split window right."
+      (interactive)
+      (split-window-right)
+      (other-window 1))
+    :config
+    (global-set-key (kbd "C-x 2") #'ian/split-and-follow-horizontally)
+    (global-set-key (kbd "C-x 3") #'ian/split-and-follow-vertically))
+#+END_SRC
+
+
+*** Don't confirm killing processes
+
+#+BEGIN_SRC emacs-lisp
+  (use-package files
+    :ensure nil
+    :config
+    (setq confirm-kill-processes nil))
+#+END_SRC
+
+
+** Prettifying
+
+*** Color theme
+
+Themes in this day and age are not going to be an attack vector.
+
+#+BEGIN_SRC emacs-lisp
+(setq custom-safe-themes t)
+#+END_SRC
+
+Use a pretty theme.
+
+#+BEGIN_SRC emacs-lisp
+(use-package "monokai-pro-theme"
+  :config
+  (load-theme 'monokai-pro t))
+#+END_SRC
+
+
+*** highlight line
+
+#+BEGIN_SRC emacs-lisp
+(use-package hl-line
+  :ensure nil
+  :custom
+  (set-face-attribute 'hl-line nil :background "gray21")
+  :hook
+  (prog-mode-hook . hl-line-mode)
+  (text-mode-hook . hl-line-mode))
+
+;; for some reason these don't work inside :config or :custom?
+(global-hl-line-mode 1)
+(set-face-background 'hl-line "blue")
+
+#+END_SRC
+
 
 ** Disable the startup and splash screens
 
-N.B. this package is built-in and cannot be downloaded, hence the `:ensure nil`.
+N.B. this package is built-in and cannot be downloaded, hence the ~:ensure nil~.
 
 #+BEGIN_SRC emacs-lisp
 (use-package "startup"
@@ -56,28 +343,35 @@ N.B. this package is built-in and cannot be downloaded, hence the `:ensure nil`.
   (inhibit-splash-screen t))
 #+END_SRC
 
-** Disable backups
-
-#+BEGIN_SRC emacs-lisp
-(setq make-backup-files nil)
-#+END_SRC
-
-** Set a pretty theme
-
-#+BEGIN_SRC emacs-lisp
-(use-package "monokai-pro-theme"
-  :config
-  (load-theme 'monokai-pro t))
-#+END_SRC
 
 ** More natural scrolling
 
-From https://ogbe.net/emacs/minimal.html
+From https://ogbe.net/emacs/minimal.html and https://github.com/ianpan870102/yay-evil-emacs
 
 #+BEGIN_SRC emacs-lisp
-(setq scroll-step            1
-      scroll-conservatively  10000)
+(setq 
+    auto-window-vscroll               nil
+    scroll-conservatively             10000
+    scroll-margin                     0
+    scroll-preserve-screen-position   t
+    scroll-step                       1
+)
 #+END_SRC
+
+
+** Mouse wheel (track-pad) scroll speed
+
+/[[https://github.com/ianpan870102/yay-evil-emacs][(from yay-evil-emacs)]]/
+
+By default, the scrolling is way too fast to be precise and helpful,
+let's tune it down a little bit.
+#+BEGIN_SRC emacs-lisp
+  (use-package mwheel
+    :ensure nil
+    :config (setq mouse-wheel-scroll-amount '(1 ((shift) . 1))
+                  mouse-wheel-progressive-speed nil))
+#+END_SRC
+
 
 ** Show trailing whitespace
 
@@ -93,6 +387,20 @@ From https://ogbe.net/emacs/minimal.html
           (lambda () (setq-local show-trailing-whitespace nil))))
 #+END_SRC
 
+
+** Show matching parentheses
+
+/[[https://github.com/ianpan870102/yay-evil-emacs][(from yay-evil-emacs)]]/
+
+Reduce the highlight delay to instantly.
+#+BEGIN_SRC emacs-lisp
+  (use-package paren
+    :ensure nil
+    :init (setq show-paren-delay 0)
+    :config (show-paren-mode +1))
+#+END_SRC
+
+
 ** Disable garbage collection while the minibuffer is open
 
 From https://emacs.stackexchange.com/a/60588.
@@ -107,7 +415,55 @@ From https://emacs.stackexchange.com/a/60588.
 (add-hook 'minibuffer-setup-hook #'my-minibuffer-setup-hook)
 (add-hook 'minibuffer-exit-hook #'my-minibuffer-exit-hook)
 #+END_SRC
+
+
+** Watch for external changes
+
+Auto refreshes every 2 seconds. Don't forget to refresh the version
+ control status as well.
+#+BEGIN_SRC emacs-lisp
+  (use-package autorevert
+    :ensure nil
+    :config
+    (global-auto-revert-mode +1)
+    (setq auto-revert-interval 2
+          auto-revert-check-vc-info t
+          global-auto-revert-non-file-buffers t
+          auto-revert-verbose nil))
+#+END_SRC
+
+
+** Start a server
+
+#+BEGIN_SRC emacs-lisp
+;; starts an emacs server so as to be available to emacsclient
+(require 'server)
+(or (server-running-p)
+    (server-start))
+#+END_SRC
+
+** Answer merely "y" instead of "yes"
+
+#+BEGIN_SRC emacs-lisp
+;; replaces all "answer yes or no" prompts with "answer y or n"
+(fset 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+
+* Environment-specific Configuration
+
+** Mac OS X
+
+*** Configure PATH on macOS
+#+BEGIN_SRC emacs-lisp
+  (use-package exec-path-from-shell
+    :config (when (memq window-system '(mac ns x))
+              (exec-path-from-shell-initialize)))
+#+END_SRC
+
+
 * Miscellaneous Useful Packages
+
 
 ** diminish
 
@@ -117,14 +473,87 @@ This [[https://github.com/emacsmirror/diminish][package]] implements hiding or a
 (use-package diminish)
 #+END_SRC
 
+
+** bookmarks
+
+#+BEGIN_SRC emacs-lisp
+;; bookmarks -- http://www.nongnu.org/bm/
+(use-package bm
+  :bind
+  ("<f2>" . bm-toggle)
+  ("<f5>" . bm-next)
+  ("<f6>" . bm-previous))
+#+END_SRC
+
+
+** hideshow
+
+;; http://www.emacswiki.org/emacs/HideShow
+
+**TODO**: integrate this with org-mode so e.g. ~hs-show-all~ does ~org-show-all~
+Also, org-mode's hiding and showing is way more capable (i.e. just hit
+<TAB>)
+https://github.com/shanecelis/hideshow-org makes prog-mode hideshow.el
+do that instead of ~M-=~ et. al.
+
+
+#+BEGIN_SRC emacs-lisp
+(use-package hideshow
+  :ensure nil
+  :bind
+  ("M-=" . hs-toggle-hiding)
+  ("M-+" . hs-show-all)
+  ("M-_" . hs-hide-all)
+  ("C-M-_" . hs-hide-all)
+  :hook
+  (prog-mode . hs-minor-mode))
+
+
+
+(defadvice goto-line (after expand-after-goto-line
+                            activate compile)
+  "hideshow-expand affected block when using goto-line in a collapsed buffer"
+  (save-excursion
+    (hs-show-block)))
+
+(defun display-code-line-counts (ov)
+  (when (eq 'code (overlay-get ov 'hs))
+    (overlay-put ov 'display
+                 (format "... / %d"
+                         (count-lines (overlay-start ov)
+                                      (overlay-end ov))))))
+
+(setq hs-set-up-overlay 'display-code-line-counts)
+(setq hs-isearch-open t)
+
+; (add-hook 'conf-mode-hook 'hs-minor-mode)
+; (add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+; (add-hook 'indented-text-mode-hook 'hs-minor-mode)
+; (add-hook 'java-mode-hook 'hs-minor-mode)
+; (add-hook 'perl-mode-hook 'hs-minor-mode)
+; (add-hook 'puppet-mode-hook 'hs-minor-mode)
+; (add-hook 'python-mode-hook 'hs-minor-mode)
+; (add-hook 'ruby-mode-hook 'hs-minor-mode)
+; (add-hook 'shell-mode-hook 'hs-minor-mode)
+; 
+; Ruby HideShow support
+(add-to-list 'hs-special-modes-alist
+             '(ruby-mode
+               "\\(def\\|do\\|{\\)" "\\(end\\|end\\|}\\)" "#"
+               (lambda (arg) (ruby-end-of-block)) nil))
+
+
+#+END_SRC
+
 ** smex
 
-This [[https://github.com/nonsequitur/smex][package]] adds most-recently-used support to `M-x`, including when invoked by `counsel-M-x`
+This [[https://github.com/nonsequitur/smex][package]] adds most-recently-used support to ~M-x~, including when invoked by ~counsel-M-x~.
 
 #+BEGIN_SRC emacs-lisp
 (use-package smex
   :config (smex-initialize))
 #+END_SRC
+
 
 ** which-key
 
@@ -142,180 +571,793 @@ This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can
   (which-key-mode))
 #+END_SRC
 
-* Ivy/Counsel
 
-** Ivy
+* Helper Packages
 
-[[https://github.com/abo-abo/swiper][Ivy]] is a narrowing-completion framework. It narrows options in emacs-the-application, whereas company autocompletes buffer contents.
-
-For a more in-depth explanation, see [[https://www.reddit.com/r/emacs/comments/6jsz61/can_someone_explain_ivy_counsel_andor_swiper_to_me/][this post]].
-
-This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p.
-
-#+BEGIN_SRC emacs-lisp
-(use-package ivy
-  :diminish
-  :custom
-  (ivy-count-format "(%d/%d) ")
-  (ivy-height 20)
-  (ivy-use-selectable-prompt t)
-  (ivy-use-virtual-buffers t)
-  :config
-  (ivy-mode))
-#+END_SRC
-
-*** ivy-rich
-
-A friendlier interface for ivy. [[https://github.com/Yevgnen/ivy-rich][Source]]
-This config provided by https://ogbe.net/emacs/minimal.html
-
-#+BEGIN_SRC emacs-lisp
-(use-package ivy-rich
-  :after ivy
-  :custom
-  (ivy-virtual-abbreviate 'full)
-  (ivy-rich-switch-buffer-align-virtual-buffer t)
-  (ivy-rich-path-style 'abbrev)
-  (ivy-rich-parse-remote-buffer nil)
-  (ivy-rich-parse-remote-file-path nil)
-  :config
-  (ivy-set-display-transformer 'ivy-switch-buffer
-    'ivy-rich-switch-buffer-transformer)
-  (ivy-rich-mode))
-#+END_SRC
-
-*** ivy-avy
-
-[[https://github.com/abo-abo/avy][`avy` is a GNU Emacs package]] for jumping to visible text using a char-based decision tree. 
-
-#+BEGIN_SRC emacs-lisp
-(use-package avy
-  :bind ("C-'" . avy-goto-char-timer))
-
-(use-package ivy-avy
-  :after ivy
-  :bind (:map ivy-minibuffer-map)
-         ("C-'" . ivy-avy))
-#+END_SRC
-
-** Counsel
-
-Counsel is a set of replacements for common emacs commands that leverages Ivy.
-
-This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p.
-
-#+BEGIN_SRC emacs-lisp
-(use-package counsel
-  :after ivy
-  :diminish
-  :bind* ; load when pressed
-  (("M-x"     . counsel-M-x)
-   ("C-s"     . counsel-grep-or-swiper)  ; was "swiper"
-   ("C-x C-f" . counsel-find-file)
-   ("C-x C-r" . counsel-recentf)  ; search for recently edited
-   ("C-c i"   . counsel-imenu)    ; search for sections in current buffer
-   ("C-c g"   . counsel-git)      ; search for files in git repo
-   ("C-c j"   . counsel-git-grep) ; search for regexp in git repo
-   ("C-c y"   . counsel-yank-pop)
-   ("C-x l"   . counsel-locate)
-   ("<f1> f"  . counsel-describe-function)
-   ("<f1> v"  . counsel-describe-variable)
-   ("<f1> l"  . counsel-find-library)
-   ("<f2> i"  . counsel-info-lookup-symbol)
-   ("<f2> u"  . counsel-unicode-char)
-   ("C-c C-r" . ivy-resume)))     ; Resume last Ivy-based completion
-#+END_SRC
-
-** ivy-prescient
+** prescient
 
 https://github.com/raxod502/prescient.el
 
 #+BEGIN_SRC emacs-lisp
+(use-package prescient
+  :diminish
+  :config
+  (prescient-persist-mode +1))
+
+(use-package company-prescient
+  :after company
+  :diminish
+  :custom
+  (company-prescient-sort-length-enable nil)
+  :hook (company-mode . company-prescient-mode))
+
 (use-package ivy-prescient
+  :after ivy
   :diminish
   :hook (ivy-mode . ivy-prescient-mode))
 #+END_SRC
 
-* Company
+** Ivy/Counsel
 
-Company is an autocomplete framework that cares about buffer contents (as opposed to ivy, which cares about emacs-the-application)
+*** Ivy
 
-This is partially from https://www.reddit.com/r/emacs/comments/8z4jcs/tip_how_to_integrate_company_as_completion/
+ [[https://github.com/abo-abo/swiper][Ivy]] is a narrowing-completion framework. It narrows options in emacs-the-application, whereas company autocompletes buffer contents.
+
+ For a more in-depth explanation, see [[https://www.reddit.com/r/emacs/comments/6jsz61/can_someone_explain_ivy_counsel_andor_swiper_to_me/][this post]].
+
+ This configuration courtesy of
+ https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p.
+
+ Here's another [[https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilities_in_your/][best practices guide]].
+
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package ivy
+   :diminish
+   :custom
+   (enable-recursive-minibuffers t)
+   (ivy-count-format "(%d/%d) ")
+   (ivy-height 20)
+   (ivy-use-selectable-prompt t)
+   (ivy-use-virtual-buffers t)
+   ;; no regexp by default
+   (ivy-initial-inputs-alist nil)
+   ;; configure regexp engine.
+   (ivy-re-builders-alist
+     ;; allow input not in order
+     '((t   . ivy--regex-ignore-order)))
+
+   :bind
+   (:map ivy-mode-map
+   ; https://github.com/abo-abo/avy
+   ("C-'" . ivy-avy))
+   
+   :config
+   (ivy-mode))
+ #+END_SRC
+
+**** ivy-avy
+
+ [[https://github.com/abo-abo/avy][~avy~ is a GNU Emacs package]] for jumping to visible text using a char-based decision tree. 
+
+ N.B. in order to use ~C-'~ in iTerm2 in Mac OS X, I had to add the following in *Preferences* > *Profiles* > *Default* > *Keys*:
+
+ #+BEGIN_QUOTE
+ Send Escape Sequence: [27;5;39~
+ #+END_QUOTE
+
+ Note that this does not include the ~^[~ that iTerm2 automatically adds at the beginning.
+
+ N.B. 2 the "39" above is the ASCII code for the character; try others http://www.asciitable.com/
+
+
+
+
+ #+BEGIN_SRC emacs-lisp
+
+   (eval-when-compile
+     (require 'use-package))
+   (require 'diminish)                ;; if you use :diminish
+   (require 'bind-key)                ;; if you use any :bind variant
+
+   (use-package avy
+     :bind ("C-'" . avy-goto-char-timer))
+
+   ;; this is necessary to override org-mode, which otherwise defines ~C-'~ as org-cycle-agenda-files.
+   (bind-keys*
+     ("C-'" . avy-goto-char-timer))
+
+   ;; (use-package ivy-avy
+   ;;   :after ivy
+   ;;   :bind (:map ivy-minibuffer-map)
+   ;;          ("C-'" . ivy-avy))
+ #+END_SRC
+**** ivy-rich
+
+ A friendlier interface for ivy. [[https://github.com/Yevgnen/ivy-rich][Source]]
+
+ This config provided by https://ogbe.net/emacs/minimal.html
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package ivy-rich
+   :after ivy
+   :custom
+   (ivy-virtual-abbreviate 'full)
+   (ivy-rich-switch-buffer-align-virtual-buffer t)
+   (ivy-rich-path-style 'abbrev)
+   (ivy-rich-parse-remote-buffer nil)
+   (ivy-rich-parse-remote-file-path nil)
+   :config
+   (ivy-set-display-transformer 'ivy-switch-buffer
+     'ivy-rich-switch-buffer-transformer)
+   (ivy-rich-mode))
+ #+END_SRC
+
+*** Counsel
+
+ Counsel is a set of replacements for common emacs commands that leverages Ivy.
+
+ This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can-you-packages-m9p.
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package counsel
+   :diminish
+   :bind* ; load when pressed
+   (("M-x"     . counsel-M-x)
+    ("C-s"     . counsel-grep-or-swiper)  ; was "swiper"
+    ("C-x C-f" . counsel-find-file)
+    ("C-x C-r" . counsel-recentf)  ; search for recently edited
+    ("C-c i"   . counsel-imenu)    ; search for sections in current buffer
+    ("C-c o"   . counsel-outline)  ; search for headings in current buffer
+    ("C-c g"   . counsel-git)      ; search for files in git repo
+    ("C-c j"   . counsel-git-grep) ; search for regexp in git repo
+    ("C-c y"   . counsel-yank-pop)
+    ("C-x l"   . counsel-locate)
+    ("<f1> f"  . counsel-describe-function)
+    ("<f1> v"  . counsel-describe-variable)
+    ("<f1> l"  . counsel-find-library)
+    ("<f2> i"  . counsel-info-lookup-symbol)
+    ("<f2> u"  . counsel-unicode-char)
+    ("C-c C-r" . ivy-resume)))     ; Resume last Ivy-based completion
+ #+END_SRC
+
+
+
+** Company
+
+ Company is an autocomplete framework that cares about buffer contents (as opposed to ivy, which cares about emacs-the-application)
+
+ This is partially from https://www.reddit.com/r/emacs/comments/8z4jcs/tip_how_to_integrate_company_as_completion/
 
 #+BEGIN_SRC emacs-lisp
   (use-package company
     :diminish
     ;; Use "shift + tab" to manually trigger a completion if necessary
     :bind (("<backtab>" . company-complete))
+    :hook (prog-mode . company-mode)
     :custom
     (company-begin-commands '(self-insert-command))
     (company-idle-delay .1)
     (company-minimum-prefix-length 2)
     (company-selection-wrap-around t)
     (company-show-numbers t)
-    (company-tooltip-align-annotations 't)
+    (company-tooltip-align-annotations t)
+    (company-frontends '(
+        company-pseudo-tooltip-frontend  ; show tooltip even for single candidate
+	company-echo-metadata-frontend))
     (global-company-mode t))
 #+END_SRC
 
-** company-prescient
 
-https://github.com/raxod502/prescient.el
 
+* Mode Configurations
+
+** Shared configuration
+
+*** Indentation improvement
+
+/[[https://github.com/ianpan870102/yay-evil-emacs][(from yay-evil-emacs)]]/
+
+
+ For Java and C/C++, change the formatting style from GNU (the default)
+ to the more standard K&R. Here we also set the indentation width of C,
+ C++, Java, JavaScript, and Python to the preferred value defined in
+ ~ian/indent-width~. Of course, you can change the value depending on
+ the language as well.
+ #+BEGIN_SRC emacs-lisp
+   ;; C, C++, and Java
+   (use-package cc-vars
+     :ensure nil
+     :config
+     (setq-default c-basic-offset ian/indent-width)
+     (setq c-default-style '((java-mode . "java")
+                             (awk-mode . "awk")
+                             (other . "k&r"))))
+
+   ;; JavaScript
+   (use-package js
+     :ensure nil
+     :config (setq js-indent-level ian/indent-width))
+
+   ;; Python (both v2 and v3)
+   (use-package python
+     :ensure nil
+     :config (setq python-indent-offset ian/indent-width))
+ #+END_SRC
+
+
+*** Syntax highlighting
+
+/[[https://github.com/ianpan870102/yay-evil-emacs][(from yay-evil-emacs)]]/
+
+Lightweight syntax highlighting improvement for numbers, operators,
+and escape sequences.
 #+BEGIN_SRC emacs-lisp
-(use-package company-prescient
-  :diminish
-  :hook (company-mode . company-prescient-mode))
+  (use-package highlight-numbers
+    :hook (prog-mode . highlight-numbers-mode))
 
-(setq company-prescient-sort-length-enable nil)
+  (use-package highlight-operators
+    :hook (prog-mode . highlight-operators-mode))
+
+  (use-package highlight-escape-sequences
+    :hook (prog-mode . hes-mode))
 #+END_SRC
 
-* Modern Python IDE
-
-First, set up a virtualenv and `pip install python-language-server[all]`.
-
-Next, open a Python source code file. If anything does not autocomplete, use `M-x company-complete` to manually trigger such.
-
-** Dependency Packages
+*** highlight line
 
 #+BEGIN_SRC emacs-lisp
-(use-package highlight-indentation
-  :hook python-mode)
-(use-package flycheck
-  :diminish
-  :hook python-mode)
-(use-package pyvenv
-  :hook python-mode)
-(use-package yasnippet
-  :diminish yas-minor-mode
-  :hook (python-mode . yas-minor-mode))
+
+  ;; (global-hl-line-mode 1)
+  ;; (set-face-background 'hl-line "blue")
+
 #+END_SRC
 
-** lsp-mode and friends
+
+*** Navigation
+
+**** Jump to matching parenthesis
+#+BEGIN_SRC emacs-lisp
+(defun forward-or-backward-sexp (&optional arg)
+  "Go to the matching parenthesis character if one is adjacent to point."
+  (interactive "^p")
+  (cond ((looking-at "\\s(") (forward-sexp arg))
+        ((looking-back "\\s)" 1) (backward-sexp arg))
+        ;; Now, try to succeed from inside of a bracket
+        ((looking-at "\\s)") (forward-char) (backward-sexp arg))
+        ((looking-back "\\s(" 1) (backward-char) (forward-sexp arg))))
+
+(global-set-key (kbd "C-\\") 'forward-or-backward-sexp)
+#+END_SRC
+
+
+** python-mode
+
+ First, set up a virtualenv and ~pip install python-language-server[all]~.
+
+ Next, open a Python source code file. If anything does not autocomplete, use ~M-x company-complete~ to manually trigger such.
+
+*** Dependency Packages
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package highlight-indentation
+   :hook python-mode)
+ (use-package flycheck
+   :diminish
+   :hook python-mode)
+ ;(use-package pyvenv
+ ;  :hook python-mode)
+ (use-package yasnippet
+   :diminish yas-minor-mode
+   :hook (python-mode . yas-minor-mode))
+ #+END_SRC
+
+*** lsp-mode and friends
+
+ #+BEGIN_SRC emacs-lisp
+ (use-package lsp-mode
+   :hook ((python-mode . lsp)))
+
+ ;; lsp extras
+ (use-package lsp-ui
+   :after lsp-mode
+   :hook (
+     (python-mode . lsp-ui-mode))
+   :custom
+   (lsp-ui-sideline-ignore-duplicate t)
+   (lsp-ui-sideline-show-diagnostics t)
+   (lsp-ui-sideline-show-hover nil)
+   (lsp-ui-sideline-show-code-actions t))
+ #+END_SRC
+
+
+** org-mode
 
 #+BEGIN_SRC emacs-lisp
-(use-package lsp-mode
-  :hook ((python-mode . lsp)))
+  (use-package org
+    :hook ((org-mode . visual-line-mode)
+           (org-mode . org-indent-mode)))
 
-;; lsp extras
-(use-package lsp-ui
-  :after lsp-mode
-  :hook (
-    (python-mode . lsp-ui-mode))
+  (use-package org-bullets :hook (org-mode . org-bullets-mode))
+#+END_SRC
+
+This is all imported from the old config wholesale
+
+#+BEGIN_SRC emacs-lisp
+
+;;;
+;;; Org Mode
+;;;
+
+;;;;;;;;;;;;;;; org-mode ;;;;;;;;;;;;;;;
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
+(require 'org)
+
+;; disable org-journal keybindings
+(define-key org-mode-map "\C-c\C-s" nil)
+(define-key org-mode-map "\C-c\C-f" nil)
+(define-key org-mode-map "\C-c\C-b" nil)
+(define-key org-mode-map "\C-c\C-j" nil)
+
+;(require 'org-protocol)
+(setq org-refile-use-outline-path 'file)
+(setq org-refile-targets (quote (
+                                 (nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 6)
+                                 (org-agenda-files :tag . "heading")
+                                 (org-agenda-files :tag . "project")
+                                 (org-agenda-files :todo . "PROJ")
+                                 )))
+(setq org-completion-use-ido nil)
+(setq org-outline-path-complete-in-steps nil)
+(setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-refile-use-cache t)
+(run-with-idle-timer 300 t (lambda ()
+                             (org-refile-cache-clear)
+                             (org-refile-get-targets)))
+
+;; Adding TODO keywords
+;; http://orgmode.org/manual/Workflow-states.html#Workflow-states
+(setq org-todo-keywords '((sequence "TODO(t)" "LIVE(l)" "WAIT(w)" "|"
+                                    "SOMEDAY(s)" "WONT(n)" "DONE(d)" "PROJ(p)")))
+
+;; make org files quite a bit prettier -- http://doc.rix.si/cce/cce-org.html#org635a684
+;(require 'org-indent)
+;(setq org-startup-indented t)
+;(diminish 'org-indent-mode )
+(setq org-hide-leading-stars nil)
+(setq org-cycle-separator-lines 2)
+
+
+
+;;;;;;;;;;;;;;; org-agenda ;;;;;;;;;;;;;;;
+(define-key global-map "\C-ca" 'org-agenda)
+(define-key global-map (kbd "<f12>")
+          (lambda () (interactive) (org-agenda nil "a")))
+;(setq org-agenda-files (list "~/org" "~/org/journal"))
+(setq org-agenda-file-regexp "\\`[^.].*\\.org\\'\\|\\`[0-9]+\\'")
+
+
+;;;;;;;;;;;;;;; org-journal ;;;;;;;;;;;;;;;
+(use-package org-journal
   :custom
-  (lsp-ui-sideline-ignore-duplicate t)
-  (lsp-ui-sideline-show-diagnostics t)
-  (lsp-ui-sideline-show-hover nil)
-  (lsp-ui-sideline-show-code-actions t))
+  (org-journal-dir (concat org-directory "/journal"))
+  (org-journal-carryover-items nil)
+  (org-journal-enable-agenda-integration t)
+  (org-journal-time-format "<%Y-%m-%d %a %H:%M> ")
+  :bind
+  ("C-c j" . org-journal-new-scheduled-entry))
+
+
+(defun org-journal-find-location ()
+  ;; Open today's journal, but specify a non-nil prefix argument in order to
+  ;; inhibit inserting the heading; org-capture will insert the heading.
+  (org-journal-new-entry t)
+  ;; Position point on the journal's top-level heading so that org-capture
+  ;; will add the new entry as a child entry.
+  (goto-char (point-min)))
+
+
+;;;;;;;;;;;;;;; org-capture ;;;;;;;;;;;;;;;
+;; http://orgmode.org/manual/Setting-up-capture.html#Setting-up-capture
+(setq org-default-notes-file (concat org-directory "/activity.org"))
+(define-key global-map "\C-cc" 'org-capture)
+(define-key org-mode-map "\C-cl" 'org-store-link)
+(define-key org-mode-map "\C-ci" 'org-insert-last-stored-link)
+
+
+
+;; make the frame contain a single window. by
+;; default org-remember splits the window.
+;; CRITICAL
+(add-hook 'org-capture-mode-hook
+          'delete-other-windows)
+
+;; CRITICAL
+(defun make-capture-frame ()
+  "Create a new frame and run org-capture."
+  (interactive)
+  (make-frame '((name . "*Capture*")
+                 (width . 80)
+                 (height . 40)
+                 (vertical-scroll-bars . nil)
+                 (menu-bar-lines . nil)
+                 (tool-bar-lines . nil)))
+  (select-frame-by-name "*Capture*")
+  (delete-other-frames)
+  (org-capture nil)
+)
+
+(setq org-capture-templates
+      (quote (
+("n" "Notes (inbox.org)" entry (file+headline
+org-default-notes-file "Activity")
+"* %^{Description} %^g %?
+Added: %U")
+
+)))
+
+;; ("j" "Journal Entry (daily file)" entry (function org-journal-find-location)
+;; "** %T - %^{Activity}")
+
+;; ("a" "Appointment" entry (file+headline
+;; org-default-notes-file "Calendar")
+;; "* APPT %^{Description} %^g
+;; %?
+;; Added: %U")
+
+; ("t" "Task Diary" entry (file+datetree
+; org-default-notes-file)
+; "* TODO %^{Description}  %^g
+; %?
+; Added: %U")
+
+;; ("j" "Journal entry" entry (function org-journal-find-location)
+;; "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
+;; ;"* %(format-time-string org-journal-time-format)%i%?")
+
+
+
+;; Notes
+;; in-buffer settings: http://orgmode.org/manual/In_002dbuffer-settings.html
+;; cheat sheet: http://orgmode.org/orgcard.txt
+
+;;; https://blog.aaronbieber.com/2016/09/24/an-agenda-for-life-with-org-mode.html
+
+(defun air-org-skip-subtree-if-priority (priority)
+  "Skip an agenda subtree if it has a priority of PRIORITY.
+
+PRIORITY may be one of the characters ?A, ?B, or ?C."
+  (let ((subtree-end (save-excursion (org-end-of-subtree t)))
+        (pri-value (* 1000 (- org-lowest-priority priority)))
+        (pri-current (org-get-priority (thing-at-point 'line t))))
+    (if (= pri-value pri-current)
+        subtree-end
+      nil)))
+
+(setq org-agenda-custom-commands
+      '(("c" "Simple agenda view"
+         ((tags "PRIORITY=\"A\""
+                ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                 (org-agenda-overriding-header "High-priority unfinished tasks:")))
+          (agenda "")
+          (alltodo ""
+                   ((org-agenda-skip-function
+                     '(or (air-org-skip-subtree-if-priority ?A)
+                          (org-agenda-skip-if nil '(scheduled deadline))))))))))
+
+
+(defun air-pop-to-org-agenda (&optional split)
+  "Visit the org agenda, in the current window or a SPLIT."
+  (interactive "P")
+  (org-agenda nil "c")
+  (when (not split)
+    (delete-other-windows)))
+
+(define-key global-map (kbd "M-SPC") 'air-pop-to-org-agenda)
+
+;;;;;;;;;;;;;;; org-babel ;;;;;;;;;;;;;;;
+
+;; http://cachestocaches.com/2018/6/org-literate-programming/
+
+;; Run/highlight code using babel in org-mode
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   (python . t)
+   (shell . t)
+   ;; Include other languages here...
+   ))
+;; Syntax highlight in #+BEGIN_SRC blocks
+(setq org-src-fontify-natively t)
+;; Don't prompt before running code in org
+(setq org-confirm-babel-evaluate nil)
+;; Fix an incompatibility between the ob-async and ob-ipython packages
+(setq ob-async-no-async-languages-alist '("ipython"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; archived
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; #+TITLE: Adam's Org-mode Emacs configuration
+;; #+OPTIONS: toc:4 h:4
+;; #+STARTUP: showeverything
+;; #+PROPERTY: header-args:emacs-lisp    :tangle yes
+;;
+;; * Configuration
+;; ** About this file
+;;    :PROPERTIES:
+;;    :CUSTOM_ID: babel-init
+;;    :END:
+;; <<babel-init>>
+;;
+;;
+;; ** Starting up
+;;
+;; #+begin_src emacs-lisp
+;; ;; This sets up the load path so that we can override it
+;; (package-initialize)
+;; #+END_SRC
+
+; (setq org-capture-templates '(("j" "Journal entry" entry (function org-journal-find-location)
+;                                "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")))
+;
+
+; (defun pc/new-buffer-p ()
+;     (not (file-exists-p (buffer-file-name))))
+;
+;   (defun pc/insert-journal-template ()
+;     (let ((template-file (expand-file-name "template.org" org-directory)))
+;       (when (pc/new-buffer-p)
+;         (save-excursion
+;           (goto-char (point-min))
+;           (insert-file-contents template-file)))))
+;
+;   (add-hook 'org-journal-after-entry-create-hook #'pc/insert-journal-template)
+
+;(setq org-journal-date-prefix "** ")
+
+;; TODO: set up all journal files to be included in the agenda generation guy
+
+(defun bh/verify-refile-target ()
+  "Exclude todo keywords with a done state from refile targets"
+  (member (nth 5 (org-heading-components)) (quote "project"))) ;Note - "org-done-keywords"?
+
+(defun bh/verify-refile-target2 ()
+  "Exclude todo keywords with a done state from refile targets"
+  (member (nth 2 (org-heading-components)) (quote "DONE"))) ;Note - "org-done-keywords"?
+
+;;(setq org-refile-target-verify-function 'bh/verify-refile-target2)
+
+
+;;(setq helm-org-headings-fontify t)
+
+
+;; (setq org-capture-templates '(
+;;
+;;       ("t" "Todo list item"
+;;        entry (file+headline org-default-notes-file "Tasks")
+;;        "* TODO %?\n %i\n %a"
+;;        )
+;;
+;;       ("p" "Project idea"
+;;        entry (file+headline org-default-notes-file "Projects")
+;;        "** PROJ %?\n %i\n %a"
+;;        )
+;;
+;;       ("b" "Tidbit: quote, zinger, one-liner or textlet"
+;;        entry
+;;        (file+headline org-default-notes-file "Tidbits")
+;;        "* %^{Name} captured %U\n%^{Tidbit type|quote|zinger|one-liner|textlet}\nPossible Inspiration: %a %i\n%?"
+;;        )
+;;
+;;       ("l" "A link, for reading later." entry
+;;        (file+headline "notes.org" "Reading List")
+;;        "* %:description\n%u\n\n%c\n\n%i"
+;;                 :empty-lines 1)
+;;
+;;       ("L" "Protocol Link" entry (file+headline ,(concat org-directory "notes.org") "Inbox")
+;;        "* %? [[%:link][%:description]] %(progn (setq kk/delete-frame-after-capture 2) \"\")\nCaptured On: %U"
+;;        :empty-lines 1)
+;;
+;;
+;;       ))
+
+; ("k" "Journal entry" entry (function org-journal-find-location)
+;                                "* %(format-time-string org-journal-time-format)%^{Title}\n%i%?")
+;
+; ("f" "Journal entry" plain
+; (file+datetree+prompt "~/org/journal2.org")
+; "%K - %a\n%i\n%?\n")
+
+
+
+
+
+
+
+; (defun org-agenda-show-tasks (&optional arg)
+;   (interactive "P")
+;   (org-agenda arg "a"))
+; (define-key org-mode-map (kbd "<f12>") 'org-agenda-show-tasks)
+
+; ;; Org-mode settings
+; (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+; (global-set-key "\C-ca" 'org-agenda)
+; (setq org-cycle-emulate-tab 'white)
+
+;; ;; org2blog support
+;; ;; https://github.com/punchagan/org2blog
+;; (require 'org2blog-autoloads)
+;; (setq org2blog/wp-use-sourcecode-shortcode t)
+;; (setq org2blog/wp-blog-alist
+;;        '(("ajc"
+;;           :url "http://ajcsystems.com/blog/xmlrpc.php"
+;;           :username "adamc"
+;;           :default-title "Hello World"
+;;           :default-categories ("org2blog" "emacs")
+;;           :tags-as-categories nil)))
+;;
+;; (setq org2blog/wp-buffer-template
+;; "#+DATE: %s
+;; #+OPTIONS: toc:nil num:nil todo:nil pri:nil tags:nil ^:nil TeX:nil
+;; #+CATEGORY:
+;; #+TAGS:
+;; #+PERMALINK:
+;; #+TITLE:
+;; \n
+;; #+HTML: <!--more-->
+;; \n")
+
+; ;; http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+;
+; (setq org-agenda-custom-commands-222
+;       '(("Q" . "Custom queries") ;; gives label to "Q"
+;         ;("Qa" "Archive search" search ""
+;         ; ((org-agenda-files (file-expand-wildcards "~/org/archive/*.org"))))
+;         ;("Qb" "Projects and Archive" search ""
+;         ; ((org-agenda-text-search-extra-files (file-expand-wildcards "~/org/archive/*.org"))))
+;         ;; searches both projects and archive directories
+;         ;("QA" "Archive tags search" org-tags-view ""
+;         ; ((org-agenda-files (file-expand-wildcards "~/org/archive/*.org"))))
+;         ;; ...other commands here
+;         ("P" "Projects" search ""
+;          ((org-agenda-text-search-extra-files (file-expand-wildcards "~/org/projects/*.org"))))
+;         )
+;       )
+;
+                                        ;
+
+; ;; Use '-' as the bullet list exclusively.
+; (setq org-list-demote-modify-bullet '(("+" . "-")
+;                                       ("*" . "-")
+;                                       ("1." . "-")
+;                                       ("1)" . "-")
+;                                       ("A)" . "-")
+;                                       ("B)" . "-")
+;                                       ("a)" . "-")
+;                                       ("b)" . "-")
+;                                       ("A." . "-")
+;                                       ("B." . "-")
+;                                       ("a." . "-")
+;                                       ("b." . "-")))
+
+
+
+; (setq daypage-path "~/org/daypages/")
+;
+; (defun tom-show-agenda ()
+;   (interactive)
+;   (delete-other-windows)
+;   (org-agenda-list)
+;   (calendar)
+;   (other-window 1)
+;   (split-window-vertically)
+;   (other-window 1)
+;   (todays-daypage))
+;
+;
+; (require 'org-daypage)
+;
+
+
+;;;; this put entries into a single file
+; ("j" "Journal" entry (file+datetree org-journal-file)
+;  "* %?\n\n  %i\n  Time: %U\n  From: %a"
+;  :empty-lines 1)
+;(defvar org-journal-file (concat org-directory "/journal.org")
+;    "Path to OrgMode journal file.")
+
+
+;; (defun org-journal-find-location ()
+;;   ;; Open today's journal, but specify a non-nil prefix argument in order to
+;;   ;; inhibit inserting the heading; org-capture will insert the heading.
+;;   (org-journal-new-entry t)
+;;   ;; Position point on the journal's top-level heading so that org-capture
+;;   ;; will add the new entry as a child entry.
+;;   (goto-char (point-min)))
+;;
+;; (defun get-journal-file-today ()
+;;   "Return filename for today's journal entry."
+;;   (let ((daily-name (format-time-string "%Y%m%d")))
+;;     (expand-file-name (concat org-directory "/journal/" daily-name))))
+;;
+;; (defun journal-file-today ()
+;;   "Create and load a journal file based on today's date."
+;;   (interactive)
+;;   (find-file (get-journal-file-today)))
+;;
+;; (global-set-key (kbd "C-c f j") 'journal-file-today)
+;;
+;; (add-to-list 'load-path (expand-file-name "~/git/org-mode/lisp"))
+
+
+(defun org-search ()
+  (interactive)
+  (org-refile '(4)))
+(define-key global-map "\C-c\C-g" 'org-search)
+;;
+
+; disable SLOW SLOW flyspell
+(flyspell-mode -1)
+
+
+
 #+END_SRC
 
-* Markdown
 
-add something to enable `visual-line-mode` for .md files
 
-    ;; (use-package rst
-    ;;   :mode (("\\.txt$" . rst-mode)
-    ;;          ("\\.rst$" . rst-mode)
-    ;;          ("\\.rest$" . rst-mode)))
+** Markdown
+
+#+BEGIN_SRC emacs-lisp
+  (use-package markdown-mode :hook (markdown-mode . visual-line-mode))
+
+;; from https://github.com/rmm5t/dotfiles/blob/master/emacs.d/rmm5t/markdown-mode.el
+(add-to-list 'auto-mode-alist '("\\.markdown$" . gfm-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . gfm-mode))
+(add-to-list 'auto-mode-alist '("\\.text$" . gfm-mode))
+
+(eval-after-load 'markdown-mode
+  '(progn
+     (define-key markdown-mode-map (kbd "C-c C-v") 'markdown-preview)
+     ))
+
+(autoload 'markdown-mode "markdown-mode" nil t)
+(autoload 'gfm-mode "gfm-mode" nil t)
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
+(add-to-list 'auto-mode-alist '("README\\.md$" . gfm-mode))
+(setq markdown-command "multimarkdown")
+#+END_SRC
+
+** js-mode
+#+BEGIN_SRC emacs-lisp
+
+
+
+(add-to-list 'auto-mode-alist '("\\.jsx\\'" . js-mode))
+(defun my-js-mode-hook ()
+  "Customizations"
+  (setq js-indent-level 2)
+  (setq indent-tabs-mode nil))
+(add-hook 'js-mode-hook 'my-js-mode-hook)
+
+#+END_SRC
+
+** JSON
+
+#+BEGIN_SRC emacs-lisp
+  (use-package json-mode)
+#+END_SRC
+
+** rst-mode
+
+#+BEGIN_SRC emacs-lisp
+     ;; (use-package rst
+     ;;   :mode (("\\.txt$" . rst-mode)
+     ;;          ("\\.rst$" . rst-mode)
+     ;;          ("\\.rest$" . rst-mode)))
+#+END_SRC
+
 
 * References/Graveyard
 
@@ -417,6 +1459,28 @@ This seems not to be necessary at the moment and I'm not sure why.
       (message "Could not find git project root."))))
 #+END_SRC
 
+
+** Literate emacs config examples
+
+How to set it up: http://cachestocaches.com/2018/6/org-literate-programming/
+
+- https://www.reddit.com/r/emacs/comments/diylpz/configuration_file_organisation_literate_orgmode/
+- https://www.colinmclear.net/posts/emacs-configuration/
+- https://github.com/mclear-tools/dotemacs
+- https://so.nwalsh.com/2020/02/29/dot-emacs
+- http://bnbeckwith.com/bnb-emacs/
+- https://gitlab.com/protesilaos/dotfiles/blob/master/emacs/.emacs.d/emacs-init.org
+- https://jamiecollinson.com/blog/my-emacs-config/
+- https://blog.sumtypeofway.com/posts/emacs-config.html
+- https://github.com/patrickt/emacs/blob/master/init.el
+- https://raw.githubusercontent.com/aiguofer/dotfiles/master/user/.emacs.d/init.el
+- https://so.nwalsh.com/2020/02/29/dot-emacs
+- https://github.com/waymondo/hemacs/blob/master/init.el
+- https://github.com/andschwa/.emacs.d/blob/main/init.el
+- https://github.com/a13/emacs.d
+- 
+
+
 * Things to try
 ** ogbe.net
 
@@ -428,3 +1492,70 @@ https://ogbe.net/emacs/minimal.html
 
 https://www.emacswiki.org/emacs/DynamicAbbreviations
 
+
+* Projects/Ideas
+
+** Implement xref backend for org-mode headers so ~M-.~ just works :tm:
+
+The idea is that ~xref-find-definitions~ (which is bound to ~M-.~)
+could be used to visit links in org files or to jump to other org
+headers. That way we get to use ~M-,~ (~xref-pop-marker-stack~) to
+jump back to where we started from.
+
+The xref system supports definining additional backends to search
+through. Some examples of such are [[https://github.com/jacktasia/dumb-jump][dumb-jump]], [[https://github.com/dedi/gxref][gxref]], and [[https://github.com/NicolasPetton/xref-js2][xref-js2]].
+
+The trick is to implement a hook that xref can call. I couldn't figure
+out what the structure of the results of that hook needed to be. The
+xref code itself says a compatible library needs to implement [[https://github.com/emacs-mirror/emacs/blob/0f561ee55348ff451600cc6027db5940ee14606f/lisp/progmodes/xref.el#L38][four
+generic functions]], so that's probably the right place to start.
+
+This is some example code I was playing with. ~thingie~ works as a
+viable replacement for ~org-open-at-point~ but I wanted to a) support
+jumping to headers as well and b) not rebind ~M-.~ if I could avoid
+it.
+
+It seems like forking ~dumb-jump~ is probably a good way to start here.
+
+N.B. There's also the [[http://ergoemacs.org/emacs/emacs_jump_to_previous_position.html]["mark ring"]]; I'm not quite sure how those fit in
+together.
+
+N.B. 2 There's also an [[https://code.orgmode.org/bzg/org-mode/raw/master/lisp/org-ctags.el][~org-ctags~]] module which builds a TAGS file out
+of org headings, so that the built-in tags functions can find
+them. Seems a little clunky and it'd be nice to combine org-ctags with
+dumb-jump to get at org headings via grep dynamically.
+
+#+BEGIN_SRC emacs-lisp-scratch
+(require 'dumb-jump)
+(add-hook 'xref-backend-functions #'dumb-jump-xref-activate)
+
+
+(defun thingie (&optional m)
+    "goto link and push to marker stack"
+    (interactive)
+    (xref-push-marker-stack m)
+    (org-open-at-point m))
+#+END_SRC
+
+** Debug elisp code
+
+Some notes and references about debugging elisp. 
+
+- https://www.emacswiki.org/emacs/DebuggingWithEmacs
+- [[https://stackoverflow.com/a/7135920/459089][using debug and edebug]]
+- http://endlessparentheses.com/debugging-emacs-lisp-part-1-earn-your-independence.html
+
+
+
+
+** Make xref jump to the untangled file
+https://www.reddit.com/r/emacs/comments/7qsmp1/configuration_file_in_org_mode_jumping_to/
+
+** Zettlekasten in emacs
+
+- https://github.com/org-roam/org-roam
+  - [[https://orgmode.org/manual/Radio-Targets.html][radio targets]] "automatically turn any occurrences of certain
+    target names in normal text into a link".
+- https://karl-voit.at/2020/06/14/Zettelkasten-concerns/
+- https://karl-voit.at/2020/07/22/org-super-links/
+- https://karl-voit.at/2019/11/16/UOMF-Linking-Headings/
