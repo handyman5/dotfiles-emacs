@@ -60,19 +60,6 @@ jumped from with ~M-,~.
 
 It's activated by ~M-.~
 
-***** dumb-jump
-
-~dumb-jump~ provides an additional ~xref~ background based around
-grepping through files instead of proactively establishing a number of
-TAGS tables.
-
-#+BEGIN_SRC emacs-lisp
-
-(use-package dumb-jump
-  :config
-  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
-
-#+END_SRC
 
 
 
@@ -572,6 +559,21 @@ This configuration courtesy of https://dev.to/deciduously/how-i-emacs-and-so-can
 #+END_SRC
 
 
+** dumb-jump
+
+~dumb-jump~ provides an additional ~xref~ background based around
+grepping through files instead of proactively establishing a number of
+TAGS tables.
+
+#+BEGIN_SRC emacs-lisp
+
+(use-package dumb-jump
+  :config
+  (add-hook 'xref-backend-functions #'dumb-jump-xref-activate))
+
+#+END_SRC
+
+
 * Helper Packages
 
 ** prescient
@@ -680,7 +682,7 @@ https://github.com/raxod502/prescient.el
 
  #+BEGIN_SRC emacs-lisp
  (use-package ivy-rich
-   :after ivy
+   :after counsel
    :custom
    (ivy-virtual-abbreviate 'full)
    (ivy-rich-switch-buffer-align-virtual-buffer t)
