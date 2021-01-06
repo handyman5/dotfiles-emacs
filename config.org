@@ -530,6 +530,7 @@ do that instead of ~M-=~ et. al.
 
 #+END_SRC
 
+
 ** smex
 
 This [[https://github.com/nonsequitur/smex][package]] adds most-recently-used support to ~M-x~, including when invoked by ~counsel-M-x~.
@@ -804,6 +805,13 @@ and escape sequences.
   (use-package highlight-escape-sequences
     :hook (prog-mode . hes-mode))
 #+END_SRC
+
+Color identifiers differently
+#+BEGIN_SRC emacs-lisp
+(use-package rainbow-identifiers
+  :hook (prog-mode . rainbow-identifiers-mode))
+#+END_SRC
+
 
 *** highlight line
 
