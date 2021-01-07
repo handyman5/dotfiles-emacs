@@ -806,10 +806,13 @@ and escape sequences.
     :hook (prog-mode . hes-mode))
 #+END_SRC
 
-Color identifiers differently
+Color identifiers and delimiters differently
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-identifiers
   :hook (prog-mode . rainbow-identifiers-mode))
+
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 #+END_SRC
 
 
