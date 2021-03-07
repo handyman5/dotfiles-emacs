@@ -1,5 +1,6 @@
 ;; use this as a reference: https://github.com/patrickt/emacs/blob/master/init.el
 
+(setq comp-speed 2)
 
 
 ;; speedup tip from https://www.reddit.com/r/emacs/comments/3kqt6e/2_easy_little_known_steps_to_speed_up_emacs_start/
@@ -8,6 +9,8 @@
 ;; Load main config file "./config.org"
 (require 'org)
 (org-babel-load-file (expand-file-name "~/.emacs.d/config.org"))
+
+(mac-pseudo-daemon-mode 1)
 
 ;; setting the threshold back to the default after init is complete
 (setq gc-cons-threshold 1000000)
