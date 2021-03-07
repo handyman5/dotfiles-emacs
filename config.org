@@ -31,6 +31,20 @@ for easy reference.
 
 *** prog-mode
 
+**** sexp navigation
+/[[https://www.emacswiki.org/emacs/NavigatingParentheses][Reference]]/
+
+#+BEGIN_SRC
+  C-M-n     (forward-list)  Move forward over a parenthetical group
+  C-M-p     (backward-list)  Move backward over a parenthetical group
+  C-M-f     (forward-sexp) Move forward over a balanced expression
+  C-M-b     (backward-sexp)  Move backward over a balanced expression
+  C-M-u     (backward-up-list)  Move backward out of one level of parentheses
+  C-M-k     (kill-sexp)  Kill balanced expression forward
+  C-M-SPC   (mark-sexp)  Put the mark at the end of the sexp.
+#+END_SRC
+
+
 **** imenu
 
 ~imenu~ creates an index of interesting things in a buffer. This is
@@ -43,6 +57,7 @@ It's activated by ~C-c i~. See [[* Counsel][Counsel]].
 N.B. imenu can only jump to org-mode headers that are currently
 visible in the buffer, so it doesn't see collapsed headers.
 
+
 **** avy
 
 ~avy-goto-char-timer~ takes any number of characters, itemizes each
@@ -51,6 +66,7 @@ instance. Typying the given character or characters will jump to that
 instance.
 
 It's activated by ~C-'~. See [[ivy-avy]]
+
 
 **** xref
 
@@ -61,22 +77,31 @@ jumped from with ~M-,~.
 It's activated by ~M-.~
 
 
-
-
 *** text-mode
+
+**** org-mode default navigation
+
+/[[https://orgmode.org/manual/Motion.html][Reference]]/
+
+#+BEGIN_SRC
+C-c C-n (org-next-visible-heading)  Next heading.
+C-c C-p (org-previous-visible-heading)  Previous heading.
+C-c C-f (org-forward-heading-same-level)  Next heading same level.
+C-c C-b (org-backward-heading-same-level)  Previous heading same level.
+C-c C-u (outline-up-heading)  Backward to higher level heading.
+#+END_SRC
+
 
 **** counsel-outline
 
-For ~org-mode~ files, ~counsel-outline~ will jump to an org heading
-anywhere in your agenda.
+For ~org-mode~ files, ~counsel-outline~ (~C-c o~) will jump to an org heading anywhere in your agenda.
 
-~counsel-imenu~ seems to work pretty similarly, but it doesn't see
-collapsed headers.
+~counsel-imenu~ (~C-c i~) seems to work pretty similarly, but it doesn't see collapsed headers.
+
 
 **** ~goto-line~
 
-~goto-line~ will jump to an arbitrary line number. I have it bound to
-~M-g~, but the default is ~M-g g~.
+~goto-line~ (~M-g g~) will jump to an arbitrary line number.
 
 
 ** Tips
@@ -679,7 +704,7 @@ https://github.com/raxod502/prescient.el
      :bind (:map org-mode-map)
             ("C-'" . avy-goto-char-timer))
  #+END_SRC
- 
+
 **** ivy-rich
 
  A friendlier interface for ivy. [[https://github.com/Yevgnen/ivy-rich][Source]]
