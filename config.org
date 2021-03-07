@@ -133,6 +133,8 @@ When inside a ~#+BEGIN_SRC~ block, press ~C-c '~ to open that block in a tempora
 
 ** Notable keybindings
 
+  - ~C-M-s~: ~counsel-grep-or-swiper~ /(replacement for occur)/
+  - ~C-M-a~: ~swiper-all~ /(replacement for occur, in all open buffers)/
   - ~C-'~: ~avy-goto-char-timer~
   - ~M-o~: ~mode-line-other-buffer~ /(switch between two recently used buffers)/
 
@@ -198,16 +200,20 @@ N.B. 2 ~defer~ is implied if automatic if :commands, :bind, :bind*,  :mode or :i
 
 *** UTF-8
 
-Always use UTF-8 for everything.
+Always use UTF-8 for everything. See [[https://iqss.github.io/IQSS.emacs/init.html#version_check_and_preparation][this example]] for reference.
 
 #+BEGIN_SRC emacs-lisp
-(set-charset-priority 'unicode)
-(setq locale-coding-system 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-selection-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
+(set-charset-priority 'unicode)
+(set-default-coding-systems 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment 'utf-8)
+(set-selection-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(setq buffer-file-coding-system 'utf-8)
 (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+(setq locale-coding-system 'utf-8)
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 #+END_SRC
 
 
@@ -664,6 +670,7 @@ https://github.com/raxod502/prescient.el
      :custom
      (enable-recursive-minibuffers t)
      (ivy-count-format "(%d/%d) ")
+     (ivy-display-style 'fancy)
      (ivy-height 20)
      (ivy-use-selectable-prompt t)
      (ivy-use-virtual-buffers t)
@@ -746,7 +753,8 @@ https://github.com/raxod502/prescient.el
      (swiper-action-recenter t)
      :diminish
      :bind
-     (("C-s" . counsel-grep-or-swiper)
+     (("C-M-s"   . swiper-thing-at-point)
+      ("C-M-a"   . swiper-all)
       ("C-x C-f" . counsel-find-file)
       ("C-x C-r" . counsel-recentf)  ; search for recently edited
       ("C-c i"   . counsel-imenu)    ; search for sections in current buffer
