@@ -17,6 +17,31 @@ accomplish various uncommon tasks when I need them.
 /(This section contains day-to-day guidance on important modes, key
 bindings, etc. as a quick reference.)/
 
+
+** Notable keybindings
+
+**** All modes
+
+- ~C-M-s~: ~counsel-grep-or-swiper~ /(replacement for occur)/
+- ~C-M-a~: ~swiper-all~ /(replacement for occur, in all open buffers)/
+- ~C-'~: ~avy-goto-char-timer~
+- ~M-o~: ~mode-line-other-buffer~ /(switch between two recently used buffers)/
+- ~C-x h~: ~mark-whole-buffer~ /("select all")/
+- ~C-M-\~: ~indent-region~ /(fix indentation for a region)/
+- ~M-;~: ~comment-dwim~ /(comment region)/
+
+
+
+**** org-mode
+
+/These do not appear to work currently./
+
+- ~C-u C-c C-j~: jump to today's page
+- ~C-c a c~: custom agenda view
+- ~C-c c~: add a new item
+
+
+
 ** Buffer Navigation
 
 There are several ways to get around a buffer. Here are some of them,
@@ -26,10 +51,19 @@ for easy reference.
 
 - To jump to **headings**, use ~C-c o~ (~counsel-outline~)
 - To jump to **programming symbols**, use ~C-c i~ (~counsel-imenu~)
+- To jump to **another, git-owned file**, use ~C-c g~ (~counsel-git~)
 - To jump to **arbitrary characters**, use ~C-'~ (~avy~)
   - Note that this also works inside ~ivy~ buffers!
 
 *** prog-mode
+
+**** General navigation
+
+#+BEGIN_SRC
+  M-.       (lsp-ui-peek)  Jump to the definition of the function at point
+  M-,                      Jump back
+#+END_SRC
+
 
 **** sexp navigation
 /[[https://www.emacswiki.org/emacs/NavigatingParentheses][Reference]]/
@@ -131,12 +165,6 @@ else). Invoke it with ~C-c C-e~, then press ~h h~. See [[https://orgmode.org/man
 When inside a ~#+BEGIN_SRC~ block, press ~C-c '~ to open that block in a temporary buffer with the appropriate ~prog-mode~. Press ~C-c '~ again to write it back to the source code block, or ~C-c C-k~ to abandon it.
 
 
-** Notable keybindings
-
-  - ~C-M-s~: ~counsel-grep-or-swiper~ /(replacement for occur)/
-  - ~C-M-a~: ~swiper-all~ /(replacement for occur, in all open buffers)/
-  - ~C-'~: ~avy-goto-char-timer~
-  - ~M-o~: ~mode-line-other-buffer~ /(switch between two recently used buffers)/
 
 
 * General Configuration
@@ -934,6 +962,8 @@ N.B. The file you're working on needs to be part of a project for ~lsp~ to work.
            (org-mode . org-indent-mode)))
 
   (use-package org-bullets :hook (org-mode . org-bullets-mode))
+  (use-package org-plus-contrib)
+  (use-package htmlize)
 #+END_SRC
 
 This is all imported from the old config wholesale
@@ -1631,3 +1661,16 @@ https://www.reddit.com/r/emacs/comments/7qsmp1/configuration_file_in_org_mode_ju
 - https://karl-voit.at/2020/06/14/Zettelkasten-concerns/
 - https://karl-voit.at/2020/07/22/org-super-links/
 - https://karl-voit.at/2019/11/16/UOMF-Linking-Headings/
+
+
+** Give the emacs-brain thing another go
+- https://praxis.fortelabs.co/building-a-second-brain-in-emacs-and-org-mode-faa20ae06fc/
+- https://github.com/Kungsgeten/org-brain
+- https://github.com/theodorewiles/org-mind-map
+
+
+** Literate emacs/other dotfiles to inspect
+
+- https://zzamboni.org/post/my-emacs-configuration-with-commentary/
+- https://writequit.org/eos/eos-org.html
+  
