@@ -97,15 +97,16 @@ collapsed headers.
 *** Publish org document to HTML
 
 Use ~org-export-dispatch~ to publish a document to HTML (or anything
-else). Invoke it with ~C-c e~. See [[https://orgmode.org/manual/The-Export-Dispatcher.html#The-Export-Dispatcher][The Export Dispatcher]] for more options.
+else). Invoke it with ~C-c C-e~, then press ~h h~. See [[https://orgmode.org/manual/The-Export-Dispatcher.html#The-Export-Dispatcher][The Export Dispatcher]] for more options.
 
 
 ** Notable keybindings
 
   - ~C-'~: ~avy-goto-char-timer~
+  - ~M-o~: ~mode-line-other-buffer~ /(switch between two recently used buffers)/
 
 
-* General Configuration 
+* General Configuration
 
 ** Getting Started
 
@@ -284,6 +285,7 @@ The Emacs default split doesn't seem too intuitive for the majority of users.
 
 ** Prettifying
 
+
 *** Color theme
 
 Themes in this day and age are not going to be an attack vector.
@@ -337,7 +339,7 @@ N.B. this package is built-in and cannot be downloaded, hence the ~:ensure nil~.
 From https://ogbe.net/emacs/minimal.html and https://github.com/ianpan870102/yay-evil-emacs
 
 #+BEGIN_SRC emacs-lisp
-(setq 
+(setq
     auto-window-vscroll               nil
     scroll-conservatively             10000
     scroll-margin                     0
@@ -430,12 +432,25 @@ Auto refreshes every 2 seconds. Don't forget to refresh the version
     (server-start))
 #+END_SRC
 
+
 ** Answer merely "y" instead of "yes"
 
 #+BEGIN_SRC emacs-lisp
 ;; replaces all "answer yes or no" prompts with "answer y or n"
 (fset 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
+
+
+* Miscellaneous Keybindings
+
+** Switching between two recently used buffers
+
+Like it says on the tin. See [[https://www.emacswiki.org/emacs/SwitchingBuffers#h5o-5][the wiki]] for more.
+
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "M-o")  'mode-line-other-buffer)
+#+END_SRC
+
 
 
 * Environment-specific Configuration
@@ -451,7 +466,6 @@ Auto refreshes every 2 seconds. Don't forget to refresh the version
 
 
 * Miscellaneous Useful Packages
-
 
 ** diminish
 
@@ -598,6 +612,7 @@ https://github.com/raxod502/prescient.el
   :hook (ivy-mode . ivy-prescient-mode))
 #+END_SRC
 
+
 ** Ivy/Counsel
 
 *** Ivy
@@ -616,7 +631,7 @@ https://github.com/raxod502/prescient.el
    (use-package ivy
      :diminish
      :custom
-     ;(enable-recursive-minibuffers t)
+     (enable-recursive-minibuffers t)
      (ivy-count-format "(%d/%d) ")
      (ivy-height 20)
      (ivy-use-selectable-prompt t)
@@ -628,19 +643,13 @@ https://github.com/raxod502/prescient.el
      (ivy-re-builders-alist
        ;; allow input not in order
        '((t   . ivy--regex-ignore-order)))
-
-     ;; :bind
-     ;; (:map ivy-mode-map
-     ;; ; https://github.com/abo-abo/avy
-     ;; ("C-'" . ivy-avy))
-
      :config
      (ivy-mode))
  #+END_SRC
 
 **** ivy-avy
 
- [[https://github.com/abo-abo/avy][~avy~ is a GNU Emacs package]] for jumping to visible text using a char-based decision tree. 
+ [[https://github.com/abo-abo/avy][~avy~ is a GNU Emacs package]] for jumping to visible text using a char-based decision tree.
 
  N.B. in order to use ~C-'~ in iTerm2 in Mac OS X, I had to add the following in *Preferences* > *Profiles* > *Default* > *Keys*:
 
@@ -656,28 +665,21 @@ https://github.com/raxod502/prescient.el
 
 
  #+BEGIN_SRC emacs-lisp
-
    (eval-when-compile
-     (require 'use-package))
+   (require 'use-package))
    (require 'diminish)                ;; if you use :diminish
    (require 'bind-key)                ;; if you use any :bind variant
 
    (use-package avy
      :bind ("C-'" . avy-goto-char-timer))
 
-   ;; this is necessary to override org-mode, which otherwise defines ~C-'~ as org-cycle-agenda-files.
-   ;; (bind-keys*
-   ;;   ("C-'" . avy-goto-char-timer))
-
    (use-package ivy-avy
      :after ivy
-     ;; :bind (:map ivy-minibuffer-map)
-     ;;        ("C-'" . ivy-avy)
+     ;; this is necessary to override org-mode, which otherwise defines ~C-'~ as org-cycle-agenda-files.
      :bind (:map org-mode-map)
             ("C-'" . avy-goto-char-timer))
-
-
  #+END_SRC
+ 
 **** ivy-rich
 
  A friendlier interface for ivy. [[https://github.com/Yevgnen/ivy-rich][Source]]
@@ -709,6 +711,8 @@ https://github.com/raxod502/prescient.el
    (use-package counsel
      :config
      (counsel-mode)
+     :custom
+     (swiper-action-recenter t)
      :diminish
      :bind
      (("C-s" . counsel-grep-or-swiper)
@@ -720,15 +724,8 @@ https://github.com/raxod502/prescient.el
       ("C-c j"   . counsel-git-grep) ; search for regexp in git repo
       ("C-c y"   . counsel-yank-pop)
       ("C-x l"   . counsel-locate)
-      ("<f1> f"  . counsel-describe-function)
-      ("<f1> v"  . counsel-describe-variable)
-      ("<f1> l"  . counsel-find-library)
-      ("<f2> i"  . counsel-info-lookup-symbol)
-      ("<f2> u"  . counsel-unicode-char)
       ("C-c C-r" . ivy-resume)))     ; Resume last Ivy-based completion
-
  #+END_SRC
-
 
 
 ** Company
@@ -1349,6 +1346,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 (setq markdown-command "multimarkdown")
 #+END_SRC
 
+
 ** js-mode
 #+BEGIN_SRC emacs-lisp
 
@@ -1363,17 +1361,20 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
 
 #+END_SRC
 
+
 ** JSON
 
 #+BEGIN_SRC emacs-lisp
   (use-package json-mode)
 #+END_SRC
 
+
 ** YAML
 
 #+BEGIN_SRC emacs-lisp
   (use-package yaml-mode)
 #+END_SRC
+
 
 ** rst-mode
 
@@ -1401,6 +1402,7 @@ PRIORITY may be one of the characters ?A, ?B, or ?C."
   ;;     (add-hook 'go-mode-hook 'my-go-mode-hook)))
 
 Note that this works even for built-in packages!
+
 ** Python IDE
 
 # #+BEGIN_SRC emacs-lisp-nope
@@ -1436,6 +1438,7 @@ Note that this works even for built-in packages!
 
 # #+END_SRC
 
+
 ** Sort company python to deprioritize internal methods
 
 This seems not to be necessary at the moment and I'm not sure why.
@@ -1450,7 +1453,7 @@ This seems not to be necessary at the moment and I'm not sure why.
   ;;    (t (string-lessp x y))))
 
   ;; (defun company-transform-python (candidates)
-  ;;   "De-prioritize internal/private Python variables (e.g. 
+  ;;   "De-prioritize internal/private Python variables (e.g.
   ;;   'var._blah') in completion list ordering.
 
   ;;   See `company-transformers'."
@@ -1460,6 +1463,7 @@ This seems not to be necessary at the moment and I'm not sure why.
   ;(add-hook 'python-mode-hook 'company-transform-python)
   ;(add-hook 'inferior-python-mode-hook 'company-transform-python)
 #+END_SRC
+
 
 ** neotree
 
@@ -1504,7 +1508,7 @@ How to set it up: http://cachestocaches.com/2018/6/org-literate-programming/
 - https://github.com/waymondo/hemacs/blob/master/init.el
 - https://github.com/andschwa/.emacs.d/blob/main/init.el
 - https://github.com/a13/emacs.d
-- 
+-
 
 
 * Things to try
@@ -1514,6 +1518,7 @@ https://ogbe.net/emacs/minimal.html
 
 - try out the line numbers stuff
 -
+
 ** learn more about dabbrevs
 
 https://www.emacswiki.org/emacs/DynamicAbbreviations
@@ -1563,9 +1568,10 @@ dumb-jump to get at org headings via grep dynamically.
     (org-open-at-point m))
 #+END_SRC
 
+
 ** Debug elisp code
 
-Some notes and references about debugging elisp. 
+Some notes and references about debugging elisp.
 
 - https://www.emacswiki.org/emacs/DebuggingWithEmacs
 - [[https://stackoverflow.com/a/7135920/459089][using debug and edebug]]
@@ -1576,6 +1582,7 @@ Some notes and references about debugging elisp.
 
 ** Make xref jump to the untangled file
 https://www.reddit.com/r/emacs/comments/7qsmp1/configuration_file_in_org_mode_jumping_to/
+
 
 ** Zettlekasten in emacs
 
