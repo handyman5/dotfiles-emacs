@@ -126,6 +126,11 @@ Use ~org-export-dispatch~ to publish a document to HTML (or anything
 else). Invoke it with ~C-c C-e~, then press ~h h~. See [[https://orgmode.org/manual/The-Export-Dispatcher.html#The-Export-Dispatcher][The Export Dispatcher]] for more options.
 
 
+*** Edit source code blocks
+
+When inside a ~#+BEGIN_SRC~ block, press ~C-c '~ to open that block in a temporary buffer with the appropriate ~prog-mode~. Press ~C-c '~ again to write it back to the source code block, or ~C-c C-k~ to abandon it.
+
+
 ** Notable keybindings
 
   - ~C-'~: ~avy-goto-char-timer~
@@ -174,10 +179,10 @@ N.B. 2 ~defer~ is implied if automatic if :commands, :bind, :bind*,  :mode or :i
   (package-initialize)
 
   (setq package-archive-priorities
-	'(("melpa" . 20)
-	  ("org" . 15)
-	  ("gnu" . 10)
-	  ("melpa-stable" . 0)))
+   '(("melpa" . 20)
+     ("org" . 15)
+     ("gnu" . 10)
+     ("melpa-stable" . 0)))
 
   ;; Setting up the package manager. Install if missing.
   (unless (package-installed-p 'use-package)
