@@ -18,30 +18,6 @@ accomplish various uncommon tasks when I need them.
 bindings, etc. as a quick reference.)/
 
 
-** Notable keybindings
-
-**** All modes
-
-- ~C-M-s~: ~counsel-grep-or-swiper~ /(replacement for occur)/
-- ~C-M-a~: ~swiper-all~ /(replacement for occur, in all open buffers)/
-- ~C-'~: ~avy-goto-char-timer~
-- ~M-o~: ~mode-line-other-buffer~ /(switch between two recently used buffers)/
-- ~C-x h~: ~mark-whole-buffer~ /("select all")/
-- ~C-M-\~: ~indent-region~ /(fix indentation for a region)/
-- ~M-;~: ~comment-dwim~ /(comment region)/
-
-
-
-**** org-mode
-
-/These do not appear to work currently./
-
-- ~C-u C-c C-j~: jump to today's page
-- ~C-c a c~: custom agenda view
-- ~C-c c~: add a new item
-
-
-
 ** Buffer Navigation
 
 There are several ways to get around a buffer. Here are some of them,
@@ -52,18 +28,10 @@ for easy reference.
 - To jump to **headings**, use ~C-c o~ (~counsel-outline~)
 - To jump to **programming symbols**, use ~C-c i~ (~counsel-imenu~)
 - To jump to **another, git-owned file**, use ~C-c g~ (~counsel-git~)
-- To jump to **arbitrary characters**, use ~C-'~ (~avy~)
+- To jump to **arbitrary characters in the current screen**, use ~C-c '~ (~avy~)
   - Note that this also works inside ~ivy~ buffers!
 
 *** prog-mode
-
-**** General navigation
-
-#+BEGIN_SRC
-  M-.       (lsp-ui-peek)  Jump to the definition of the function at point
-  M-,                      Jump back
-#+END_SRC
-
 
 **** sexp navigation
 /[[https://www.emacswiki.org/emacs/NavigatingParentheses][Reference]]/
@@ -78,6 +46,8 @@ for easy reference.
   C-M-SPC   (mark-sexp)  Put the mark at the end of the sexp.
 #+END_SRC
 
+We also have ~forward-or-backward-sexp~, bound to ~C-\~.
+
 
 **** imenu
 
@@ -89,7 +59,7 @@ Markdown and ~org-mode~).
 It's activated by ~C-c i~. See [[* Counsel][Counsel]].
 
 N.B. imenu can only jump to org-mode headers that are currently
-visible in the buffer, so it doesn't see collapsed headers.
+visible in the buffer, so it doesn't see collapsed headers. Use ~C-c o~ instead.
 
 
 **** avy
@@ -99,7 +69,7 @@ instance in the file, and puts friendly letters in front of each
 instance. Typying the given character or characters will jump to that
 instance.
 
-It's activated by ~C-'~. See [[ivy-avy]]
+It's activated by ~C-c '~. See [[ivy-avy]]
 
 
 **** xref
@@ -113,7 +83,7 @@ It's activated by ~M-.~
 
 *** text-mode
 
-**** org-mode default navigation
+**** org-mode navigation
 
 /[[https://orgmode.org/manual/Motion.html][Reference]]/
 
@@ -138,10 +108,33 @@ For ~org-mode~ files, ~counsel-outline~ (~C-c o~) will jump to an org heading an
 ~goto-line~ (~M-g g~) will jump to an arbitrary line number.
 
 
+** Notable keybindings
+
+**** All modes
+
+- ~C-M-s~: ~counsel-grep-or-swiper~ /(replacement for occur)/
+- ~C-M-a~: ~swiper-all~ /(replacement for occur, in all open buffers)/
+- ~M-o~: ~mode-line-other-buffer~ /(switch between two recently used buffers)/
+- ~C-x h~: ~mark-whole-buffer~ /("select all")/
+- ~C-M-\~: ~indent-region~ /(fix indentation for a region)/
+- ~M-;~: ~comment-dwim~ /(comment region)/
+
+
+
+**** org-mode
+
+/These do not appear to work currently./
+
+- ~C-u C-c C-j~: jump to today's page
+- ~C-c a c~: custom agenda view
+- ~C-c c~: add a new item
+
+
+
 ** Tips
 
 - After loading, you can use ~M-x describe-personal-keybindings~ to see all such keybindings you’ve set throughout your .emacs file.
-  - ~global-set-key~s do not show up in this list. :'(
+  - ~global-set-key~ s do not show up in this list. :'(
 - To enable soft line-wrapping (word wrapping as a visual effect without actually inserting newlines), run ~visual-line-mode~. See [[https://www.emacswiki.org/emacs/LineWrap][LineWrap]] for more information.
 
 
@@ -195,6 +188,7 @@ This stanza comes before (almost) all others, and enables the use of the wonderf
 [[https://www.masteringemacs.org/article/spotlight-use-package-a-declarative-configuration-tool][This is an excellent reference]] for configuring use-package.
 
 N.B. [[https://emacs.stackexchange.com/a/10403][the difference]] between ~init~ and ~config~ is that ~init~ is run when emacs starts but ~config~ is run when the package is loaded
+
 N.B. 2 ~defer~ is implied if automatic if :commands, :bind, :bind*,  :mode or :interpreter are used
 
 ~package-archive-priorities~ is from https://emacs.stackexchange.com/a/22261.
@@ -737,13 +731,13 @@ https://github.com/raxod502/prescient.el
    (require 'bind-key)                ;; if you use any :bind variant
 
    (use-package avy
-     :bind ("C-'" . avy-goto-char-timer))
+     :bind ("C-c '" . avy-goto-char-timer))
 
    (use-package ivy-avy
      :after ivy
      ;; this is necessary to override org-mode, which otherwise defines ~C-'~ as org-cycle-agenda-files.
      :bind (:map org-mode-map)
-            ("C-'" . avy-goto-char-timer))
+            ("C-c '" . avy-goto-char-timer))
  #+END_SRC
 
 **** ivy-rich
